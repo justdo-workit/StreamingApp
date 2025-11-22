@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, FlagCheckered } from "lucide-react";
+import { Clock, Flag } from "lucide-react";
 import SessionStatusButton from "./SessionStatusButton";
 
 type Schedule = {
@@ -27,7 +27,7 @@ export default function ScheduleGrid({ schedule, grandPrixSlug }: ScheduleGridPr
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>{session.name}</span>
-                {session.name === 'Race' ? <FlagCheckered className="h-6 w-6 text-primary" /> : <Clock className="h-6 w-6 text-primary" />}
+                {session.name === 'Race' ? <Flag className="h-6 w-6 text-primary" /> : <Clock className="h-6 w-6 text-primary" />}
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-grow flex-col justify-between">
