@@ -8,6 +8,7 @@ export const placeholderImages: ImagePlaceholder[] = PlaceHolderImages;
 const now = new Date();
 const futureDate = (days: number, hours: number = 0, minutes: number = 0) =>
   new Date(now.getTime() + days * 24 * 60 * 60 * 1000 + hours * 60 * 60 * 1000 + minutes * 60 * 1000).toISOString();
+const liveDate = (minutes: number) => new Date(now.getTime() - minutes * 60 * 1000).toISOString();
 
 export const grandPrixes = [
   {
@@ -23,7 +24,7 @@ export const grandPrixes = [
       drsZones: 3,
     },
     schedule: [
-      { id: 1, name: 'Practice 1', time: futureDate(1, 12) },
+      { id: 1, name: 'Practice 1', time: liveDate(30) },
       { id: 2, name: 'Practice 2', time: futureDate(1, 16) },
       { id: 3, name: 'Practice 3', time: futureDate(2, 13) },
       { id: 4, name: 'Qualifying', time: futureDate(2, 17) },
