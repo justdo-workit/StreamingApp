@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { placeholderImages } from "@/lib/data";
-import { ChevronsUpDown, Drafting, Gauge, Repeat, Pin } from "lucide-react";
+import { ChevronsUpDown, DraftingCompass, Gauge, Repeat } from "lucide-react";
 import { Button } from "../ui/button";
 import AdPlaceholder from "../shared/AdPlaceholder";
 
@@ -50,7 +50,7 @@ export default function RaceFacts({ circuit }: RaceFactsProps) {
             <div className="mt-6 grid grid-cols-2 gap-6">
               <FactItem icon={Gauge} label="Track Length" value={circuit.trackLength} />
               <FactItem icon={Repeat} label="Lap Count" value={circuit.lapCount} />
-              <FactItem icon={Drafting} label="DRS Zones" value={circuit.drsZones} />
+              <FactItem icon={DraftingCompass} label="DRS Zones" value={circuit.drsZones} />
               <AdPlaceholder label="Square Ad (250x250)" className="h-[250px] w-[250px] aspect-square"/>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function RaceFacts({ circuit }: RaceFactsProps) {
                         <div className="grid grid-cols-1 gap-4">
                             <FactItem icon={Gauge} label="Track Length" value={circuit.trackLength} />
                             <FactItem icon={Repeat} label="Lap Count" value={circuit.lapCount} />
-                            <FactItem icon={Drafting} label="DRS Zones" value={circuit.drsZones} />
+                            <FactItem icon={DraftingCompass} label="DRS Zones" value={circuit.drsZones} />
                         </div>
                         <AdPlaceholder label="Square Ad (250x250)" className="h-[250px] w-full mt-6"/>
                     </CardContent>
