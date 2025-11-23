@@ -28,7 +28,7 @@ export default function Home() {
           )}
           <div className="absolute inset-0 " />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
-            <p className="mt-4 max-w-2xl text-lg font-normal text-gray-300 md:text-xl">
+            <p className="mt-4 font-headline  max-w-2xl text-2xl font-normal text-gray-50 md:text-4xl">
               Your front-row seat to every Formula 1 race. Live, fast, and for the fans.
             </p>
             <Button asChild size="lg" className="mt-8">
@@ -54,7 +54,7 @@ export default function Home() {
           <section className="py-12">
             <Card>
               <CardHeader>
-                <CardTitle className="font-headline text-3xl font-bold">
+                <CardTitle className="`font-headline` text-3xl font-bold">
                   Unrivaled F1 Action
                 </CardTitle>
               </CardHeader>
