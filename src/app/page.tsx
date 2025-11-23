@@ -15,7 +15,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-[60vh] min-h-[400px] w-full text-white">
+        <section className="relative h-[90vh] min-h-[400px] w-full text-white">
           {heroImage && (
             <Image
               src={heroImage.imageUrl}
@@ -37,6 +37,9 @@ export default function Home() {
                 {currentGrandPrix.name}
               </Link>
             </Button>
+            <p className="mt-4 text-sm text-gray-400">
+              for quick updates and alterts , join our telegram channel
+            </p>
           </div>
         </section>
 
