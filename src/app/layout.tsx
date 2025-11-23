@@ -4,34 +4,12 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 const fontSans = localFont({
-  src: [
-    {
-      path: '../../public/fonts/Formula1-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Formula1-Bold.ttf',
-      weight: '700',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Formula1-Black.ttf',
-      weight: '900',
-      style: 'normal',
-    },
-  ],
+  src: '../fonts/Formula1-Regular.ttf',
   variable: '--font-sans',
 });
 
 const fontHeadline = localFont({
-  src: [
-    {
-      path: '../../public/fonts/Formula1-Wide.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-  ],
+  src: '../fonts/Formula1-Bold.ttf',
   variable: '--font-headline',
 });
 
