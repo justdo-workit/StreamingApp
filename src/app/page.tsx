@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight } from 'lucide-react';
+import { Flag } from 'lucide-react';
 import AdPlaceholder from '@/components/shared/AdPlaceholder';
 import Footer from '@/components/layout/Footer';
 import { grandPrixes, placeholderImages } from '@/lib/data';
@@ -28,16 +28,13 @@ export default function Home() {
           )}
           <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
-            <h1 className="font-headline text-4xl font-bold md:text-7xl">
-              ApexStream
-            </h1>
             <p className="mt-4 max-w-2xl text-lg text-gray-300 md:text-xl">
               Your front-row seat to every Formula 1 race. Live, fast, and for the fans.
             </p>
             <Button asChild size="lg" className="mt-8">
               <Link href={`/grand-prix/${currentGrandPrix.slug}`}>
+                <Flag className="mr-2 h-5 w-5" />
                 {currentGrandPrix.name}
-                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>

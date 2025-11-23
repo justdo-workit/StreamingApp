@@ -64,4 +64,4 @@ export const streamSources = [
     { id: 'bk2', name: 'Backup 2' },
 ];
 
-export const streamingUrl = "https://ihatestreams.xyz/embed/1a0edc01-8363-11f0-b385-bc2411b21e0d";
+export const streamingUrl = "https://sportzonline.top/channels/hd/hd8.php";
