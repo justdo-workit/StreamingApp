@@ -9,6 +9,7 @@ import { grandPrixes, placeholderImages } from '@/lib/data';
 
 export default function Home() {
   const currentGrandPrix = grandPrixes[0];
+  const upcomingGPs = grandPrixes.slice(1);
   const heroImage = placeholderImages.find((img) => img.id === 'home-hero');
 
   return (
@@ -26,9 +27,9 @@ export default function Home() {
               data-ai-hint={heroImage.imageHint}
             />
           )}
-          <div className="absolute inset-0 " />
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
-            <p className="mt-4 font-headline  max-w-2xl text-2xl font-normal text-gray-50 md:text-4xl">
+            <p className="mt-4 max-w-2xl font-normal text-gray-300 md:text-xl">
               Your front-row seat to every Formula 1 race. Live, fast, and for the fans.
             </p>
             <Button asChild size="lg" className="mt-8">
@@ -50,11 +51,37 @@ export default function Home() {
             className="my-8 h-[90px] w-full"
           />
 
+          {/* Up Next Section */}
+          <section className="py-12">
+            <h2 className="mb-6 text-center font-headline text-4xl font-bold">
+              Up Next
+            </h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {upcomingGPs.map((gp) => (
+                <Link key={gp.slug} href={`/grand-prix/${gp.slug}`}>
+                  <Card className="flex h-full flex-col overflow-hidden transition-transform hover:scale-105 hover:shadow-lg">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <CardTitle className="font-headline text-2xl font-bold">
+                        {gp.name.replace(' Grand Prix', '')}
+                      </CardTitle>
+                      <Flag className="h-8 w-8 text-primary" />
+                    </CardHeader>
+                    <CardContent>
+                      <p className="font-semibold text-muted-foreground">
+                        {gp.date}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </section>
+
           {/* Introduction Section */}
           <section className="py-12">
             <Card>
               <CardHeader>
-                <CardTitle className="`font-headline` text-3xl font-bold">
+                <CardTitle className="font-headline text-3xl font-bold">
                   Unrivaled F1 Action
                 </CardTitle>
               </CardHeader>

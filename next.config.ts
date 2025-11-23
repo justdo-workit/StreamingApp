@@ -60,7 +60,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'image-0.uhdpaper.com',
+        hostname: '1qvc381awg.ucarecd.net',
         port: '',
         pathname: '/**',
       },
