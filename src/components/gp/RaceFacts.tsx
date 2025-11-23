@@ -27,7 +27,7 @@ const FactItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label
   <div className="flex items-center">
     <Icon className="h-6 w-6 text-primary mr-4" />
     <div>
-      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="text-sm font-normal text-muted-foreground">{label}</p>
       <p className="font-bold">{value}</p>
     </div>
   </div>
@@ -45,8 +45,8 @@ export default function RaceFacts({ circuit }: RaceFactsProps) {
         {/* Desktop View */}
         <div className="hidden md:grid md:grid-cols-2">
           <div className="p-6">
-            <CardTitle>{circuit.name}</CardTitle>
-            <p className="mt-2 text-muted-foreground">{circuit.details}</p>
+            <CardTitle className="font-headline font-bold">{circuit.name}</CardTitle>
+            <p className="mt-2 font-normal text-muted-foreground">{circuit.details}</p>
             <div className="mt-6 grid grid-cols-2 gap-6">
               <FactItem icon={Gauge} label="Track Length" value={circuit.trackLength} />
               <FactItem icon={Repeat} label="Lap Count" value={circuit.lapCount} />
@@ -73,8 +73,8 @@ export default function RaceFacts({ circuit }: RaceFactsProps) {
                 <CollapsibleTrigger asChild>
                      <div className="flex items-center justify-between p-6">
                         <div>
-                            <CardTitle>{circuit.name}</CardTitle>
-                            <p className="text-sm text-muted-foreground">Tap to see track info</p>
+                            <CardTitle className="font-headline font-bold">{circuit.name}</CardTitle>
+                            <p className="text-sm font-normal text-muted-foreground">Tap to see track info</p>
                         </div>
                         <Button variant="ghost" size="sm">
                             <ChevronsUpDown className="h-4 w-4" />
@@ -95,7 +95,7 @@ export default function RaceFacts({ circuit }: RaceFactsProps) {
                                 />
                             </div>
                         )}
-                        <p className="mb-6 text-muted-foreground">{circuit.details}</p>
+                        <p className="mb-6 font-normal text-muted-foreground">{circuit.details}</p>
                         <div className="grid grid-cols-1 gap-4">
                             <FactItem icon={Gauge} label="Track Length" value={circuit.trackLength} />
                             <FactItem icon={Repeat} label="Lap Count" value={circuit.lapCount} />

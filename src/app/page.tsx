@@ -26,9 +26,9 @@ export default function Home() {
               data-ai-hint={heroImage.imageHint}
             />
           )}
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 " />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
-            <p className="mt-4 max-w-2xl text-lg text-gray-300 md:text-xl">
+            <p className="mt-4 max-w-2xl text-lg font-normal text-gray-300 md:text-xl">
               Your front-row seat to every Formula 1 race. Live, fast, and for the fans.
             </p>
             <Button asChild size="lg" className="mt-8">
@@ -37,7 +37,7 @@ export default function Home() {
                 {currentGrandPrix.name}
               </Link>
             </Button>
-            <p className="mt-4 text-sm text-gray-400">
+            <p className="mt-4 text-sm font-normal text-gray-400">
               for quick updates and alterts , join our telegram channel
             </p>
           </div>
@@ -54,11 +54,11 @@ export default function Home() {
           <section className="py-12">
             <Card>
               <CardHeader>
-                <CardTitle className="font-headline text-3xl">
+                <CardTitle className="font-headline text-3xl font-bold">
                   Unrivaled F1 Action
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-muted-foreground">
+              <CardContent className="space-y-4 font-normal text-muted-foreground">
                 <p>
                   ApexStream is a premier destination for Formula 1 enthusiasts, offering a seamless and immersive streaming experience. We are dedicated to providing high-quality, reliable access to every Grand Prix weekend, from the first practice session to the final lap of the race. Our platform is built with a mobile-first approach, ensuring you never miss a moment, whether you&apos;re at home or on the go.
                 </p>
@@ -79,11 +79,11 @@ export default function Home() {
           <section className="grid gap-8 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="font-headline text-2xl">
+                <CardTitle className="font-headline text-2xl font-bold">
                   Disclaimer
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
+              <CardContent className="text-sm font-normal text-muted-foreground">
                 <p>
                   ApexStream is an independent platform and is not affiliated with Formula One Group, FIA, or any of its associated companies. All trademarks and copyrights belong to their respective owners. We do not own, host, or stream any copyrighted material. This service provides links to third-party streaming sources and does not verify the legality or quality of the content. Users are responsible for their own actions and must comply with their local laws.
                 </p>
@@ -91,11 +91,11 @@ export default function Home() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="font-headline text-2xl">
+                <CardTitle className="font-headline text-2xl font-bold">
                   Privacy & Rules
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2 text-sm text-muted-foreground">
+              <CardContent className="space-y-2 text-sm font-normal text-muted-foreground">
                 <p>
                   <strong>1. Data Usage:</strong> We collect anonymous usage data to improve our service and optimize ad placements. We do not sell personal data.
                 </p>

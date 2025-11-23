@@ -44,7 +44,7 @@ export default function GrandPrixPage({ params }: GrandPrixPageProps) {
             <div className="absolute inset-0 bg-black/70" />
             <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
                 <h1 className="font-headline text-4xl font-bold md:text-6xl">{gp.name}</h1>
-                <p className="mt-2 text-lg text-gray-300">{gp.date}</p>
+                <p className="mt-2 text-lg font-normal text-gray-300">{gp.date}</p>
                 {raceSession && <CountdownTimer targetDate={raceSession.time} />}
             </div>
         </section>

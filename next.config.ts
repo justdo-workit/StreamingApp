@@ -33,6 +33,18 @@ const nextConfig: NextConfig = {
         hostname: 'storage.googleapis.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pinimg.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'mir-s3-cdn-cf.behance.net',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

@@ -25,13 +25,13 @@ export default function ScheduleGrid({ schedule, grandPrixSlug }: ScheduleGridPr
         {schedule.map((session) => (
           <Card key={session.id} className="flex flex-col">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
+              <CardTitle className="flex items-center justify-between font-bold">
                 <span>{session.name}</span>
                 {session.name === 'Race' ? <Flag className="h-6 w-6 text-primary" /> : <Clock className="h-6 w-6 text-primary" />}
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-grow flex-col justify-between">
-              <p className="text-muted-foreground">
+              <p className="font-normal text-muted-foreground">
                 {new Date(session.time).toLocaleString(undefined, {
                   weekday: 'short',
                   hour: '2-digit',
