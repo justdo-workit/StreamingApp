@@ -12,6 +12,26 @@ export default function Home() {
   const upcomingGPs = grandPrixes.slice(1);
   const heroImage = placeholderImages.find((img) => img.id === 'home-hero');
 
+  // very small helper to map GP name to ISO country code for flagcdn
+  const getCountryCode = (name: string) => {
+    const n = name.toLowerCase();
+    const map: Record<string, string> = {
+      qatar: 'qa',
+      bahrain: 'bh',
+      saudi: 'sa',
+      'saudi arabia': 'sa',
+      australia: 'au',
+      japanese: 'jp',
+      japan: 'jp',
+      'abu dhabi': 'ae',
+      'united arab emirates': 'ae',
+    };
+    for (const key of Object.keys(map)) {
+      if (n.includes(key)) return map[key];
+    }
+    return '';
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-grow">
@@ -24,16 +44,17 @@ export default function Home() {
               fill
               className="object-cover"
               priority
+              quality={70}
               data-ai-hint={heroImage.imageHint}
             />
           )}
           <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
-            <p className="mt-4 max-w-2xl font-normal text-gray-300 md:text-xl">
+            <p className="mt-4 max-w-2xl font-normal text-gray-300 md:text-4xl">
               Your front-row seat to every Formula 1 race. Live, fast, and for the fans.
             </p>
             <Button asChild size="lg" className="mt-8">
-              <Link href={`/grand-prix/${currentGrandPrix.slug}`}>
+              <Link prefetch href={`/grand-prix/${currentGrandPrix.slug}`}>
                 <Flag className="mr-2 h-5 w-5" />
                 {currentGrandPrix.name}
               </Link>
@@ -53,29 +74,59 @@ export default function Home() {
 
           {/* Up Next Section */}
           <section className="py-12">
-            <h2 className="mb-6 text-center font-headline text-4xl font-bold">
+            <h2 className="mb-6 text-start uppercase font-headline text-4xl font-bold">
               Up Next
             </h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {upcomingGPs.map((gp) => (
-                <Link key={gp.slug} href={`/grand-prix/${gp.slug}`}>
-                  <Card className="flex h-full flex-col overflow-hidden transition-transform hover:scale-105 hover:shadow-lg">
-                    <CardHeader className="flex flex-row items-center justify-between">
-                      <CardTitle className="font-headline text-2xl font-bold">
-                        {gp.name.replace(' Grand Prix', '')}
-                      </CardTitle>
-                      <Flag className="h-8 w-8 text-primary" />
-                    </CardHeader>
-                    <CardContent>
-                      <p className="font-semibold text-muted-foreground">
-                        {gp.date}
-                      </p>
-                    </CardContent>
+                <Link key={gp.slug} prefetch href={`/grand-prix/${gp.slug}`}>
+                  <Card className="relative aspect-[1/1] overflow-hidden transition-transform hover:scale-105 hover:shadow-lg">
+                    {gp.cover && (
+                      <>
+                        <Image
+                          src={gp.cover}
+                          alt={`${gp.name} cover`}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                          quality={60}
+                        />
+                        <div className="absolute inset-0 bg-black/50" />
+                      </>
+                    )}
+                    {(() => {
+                      const code = getCountryCode(gp.name);
+                      return (
+                        <div className="absolute inset-x-0 bottom-0 z-10 p-4">
+                          <div className="flex items-center gap-3">
+                            <div className="relative h-10 w-10 rounded-full ring-2 ring-white/80 bg-neutral-900 overflow-hidden">
+                              {code ? (
+                                <Image
+                                  src={`https://flagcdn.com/48x36/${code}.png`}
+                                  alt={`${gp.name} flag`}
+                                  fill
+                                  className="object-cover"
+                                  sizes="40px"
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-xs text-white/80">GP</div>
+                              )}
+                            </div>
+                            <div className="leading-tight">
+                              <div className="font-headline font-bold text-white">{gp.name.replace(' Grand Prix', ' GP')} 2025</div>
+                              <div className="text-sm text-white/70">{gp.date}</div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </Card>
                 </Link>
               ))}
             </div>
           </section>
+
+       
 
           {/* Introduction Section */}
           <section className="py-12">

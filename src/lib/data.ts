@@ -12,12 +12,14 @@ const liveDate = (minutes: number) => new Date(now.getTime() - minutes * 60 * 10
 
 export const grandPrixes = [
   {
-    name: 'Bahrain Grand Prix',
+    name: 'Quatar Grand Prix',
     slug: 'bahrain',
     date: 'Mar 29-31',
+    cover : 'https://i.pinimg.com/1200x/33/ad/52/33ad52fc1cf22427acf6e7de8555e0f0.jpg',
     circuit: {
       name: 'Bahrain International Circuit',
       mapImageId: 'circuit-map',
+      mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Qatar_Circuit.webp',
       details: 'A modern desert track known for heavy braking zones and great overtaking opportunities.',
       trackLength: '5.412 km',
       lapCount: 57,
@@ -35,9 +37,11 @@ export const grandPrixes = [
     name: 'Saudi Arabian Grand Prix',
     slug: 'saudi-arabia',
     date: 'Apr 5-7',
+    cover : 'https://i.pinimg.com/1200x/9c/ad/df/9caddf11cac5c53ad469f5a7f77cb962.jpg',
     circuit: {
       name: 'Jeddah Corniche Circuit',
       mapImageId: 'circuit-map',
+       mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Abu_Dhabi_Circuit.webp',
       details: 'A fast and flowing street circuit with high-speed corners.',
       trackLength: '6.174 km',
       lapCount: 50,
@@ -52,12 +56,14 @@ export const grandPrixes = [
     ],
   },
   {
-    name: 'Australian Grand Prix',
-    slug: 'australia',
+    name: 'Abudhabi Grand Prix',
+    slug: 'YasMarina',
     date: 'Apr 19-21',
+    cover : 'https://i.pinimg.com/1200x/33/ad/52/33ad52fc1cf22427acf6e7de8555e0f0.jpg' ,
     circuit: {
-      name: 'Albert Park Circuit',
+      name: 'Yas Marina Circuit',
       mapImageId: 'circuit-map',
+       mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Qatar_Circuit.webp',
       details: 'A temporary street circuit in Melbourne with a mix of corners.',
       trackLength: '5.278 km',
       lapCount: 58,
@@ -70,27 +76,7 @@ export const grandPrixes = [
       { id: 4, name: 'Qualifying', time: futureDate(22, 16) },
       { id: 5, name: 'Race', time: futureDate(23, 15) },
     ],
-  },
-   {
-    name: 'Japanese Grand Prix',
-    slug: 'japan',
-    date: 'May 3-5',
-    circuit: {
-      name: 'Suzuka International Racing Course',
-      mapImageId: 'circuit-map',
-      details: 'A classic figure-eight layout, a favorite among drivers.',
-      trackLength: '5.807 km',
-      lapCount: 53,
-      drsZones: 1,
-    },
-     schedule: [
-      { id: 1, name: 'Practice 1', time: futureDate(35, 11) },
-      { id: 2, name: 'Practice 2', time: futureDate(35, 15) },
-      { id: 3, name: 'Practice 3', time: futureDate(36, 11) },
-      { id: 4, name: 'Qualifying', time: futureDate(36, 15) },
-      { id: 5, name: 'Race', time: futureDate(37, 14) },
-    ],
-  },
+  }
 ];
 
 export const driverStandings = [

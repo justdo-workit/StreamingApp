@@ -16,32 +16,49 @@ type ScheduleGridProps = {
 };
 
 export default function ScheduleGrid({ schedule, grandPrixSlug }: ScheduleGridProps) {
+  // group sessions by weekday name
+  const groups = schedule.reduce<Record<string, Schedule[]>>((acc, s) => {
+    const d = new Date(s.time);
+    const weekday = d.toLocaleDateString(undefined, { weekday: 'long' });
+    acc[weekday] = acc[weekday] || [];
+    acc[weekday].push(s);
+    return acc;
+  }, {});
+
+  const orderedDays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+  const entries = Object.entries(groups).sort(
+    (a,b) => orderedDays.indexOf(a[0]) - orderedDays.indexOf(b[0])
+  );
+
+  const formatRange = (iso: string, name: string) => {
+    const start = new Date(iso);
+    const end = new Date(start.getTime() + (name.toLowerCase().includes('race') ? 120 : 60) * 60 * 1000);
+    const fmt = (d: Date) => d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
+    return `${fmt(start)} - ${fmt(end)}`;
+  };
+
   return (
     <section>
-      <h2 className="mb-6 text-center font-headline text-4xl font-bold">
-        Weekend Schedule
+      <h2 className="mb-8 text-center font-headline text-4xl font-bold">
+       Schedule
       </h2>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
-        {schedule.map((session) => (
-          <Card key={session.id} className="flex flex-col">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between font-bold">
-                <span>{session.name}</span>
-                {session.name === 'Race' ? <Flag className="h-6 w-6 text-primary" /> : <Clock className="h-6 w-6 text-primary" />}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-grow flex-col justify-between">
-              <p className="font-normal text-muted-foreground">
-                {new Date(session.time).toLocaleString(undefined, {
-                  weekday: 'short',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: true,
-                })}
-              </p>
-              <SessionStatusButton sessionTime={session.time} grandPrixSlug={grandPrixSlug} />
-            </CardContent>
-          </Card>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {entries.map(([day, sessions]) => (
+          <div key={day} className="flex flex-col">
+            <div className="text-2xl font-bold text-white">{day}</div>
+            <div className="my-3 h-px w-full bg-white/15" />
+            <div className="space-y-5">
+              {sessions.map((s) => (
+                <div key={s.id} className="flex flex-col">
+                  <div className="text-base font-semibold text-white">{s.name}</div>
+                  <div className="text-sm text-white/60">{formatRange(s.time, s.name)}</div>
+                  <div className="mt-3 max-w-xs">
+                    <SessionStatusButton sessionTime={s.time} grandPrixSlug={grandPrixSlug} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </section>

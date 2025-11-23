@@ -15,6 +15,10 @@ type GrandPrixPageProps = {
   };
 };
 
+export function generateStaticParams() {
+  return grandPrixes.map((g) => ({ slug: g.slug }));
+}
+
 export default function GrandPrixPage({ params }: GrandPrixPageProps) {
   const gp = grandPrixes.find((g) => g.slug === params.slug);
 
@@ -38,6 +42,7 @@ export default function GrandPrixPage({ params }: GrandPrixPageProps) {
                 fill
                 className="object-cover"
                 priority
+                quality={70}
                 data-ai-hint={heroImage.imageHint}
               />
             )}
@@ -49,7 +54,7 @@ export default function GrandPrixPage({ params }: GrandPrixPageProps) {
             </div>
         </section>
 
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             {/* Ad Placeholder below Countdown */}
             <AdPlaceholder label="Banner Ad (970x90)" className="my-8 h-[90px] w-full" />
 

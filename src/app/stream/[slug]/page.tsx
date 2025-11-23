@@ -16,6 +16,10 @@ type StreamPageProps = {
   };
 };
 
+export function generateStaticParams() {
+  return grandPrixes.map((g) => ({ slug: g.slug }));
+}
+
 export default function StreamPage({ params }: StreamPageProps) {
   const gp = grandPrixes.find((g) => g.slug === params.slug);
 

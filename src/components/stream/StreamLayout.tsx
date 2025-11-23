@@ -1,21 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import VideoPlayer from "./VideoPlayer";
-import DriverStandings from "./DriverStandings";
-import TrackInfoWidgets from "./TrackInfoWidgets";
+import AdModals, { AdModalHandles } from "./AdModals";
 import AdPlaceholder from "../shared/AdPlaceholder";
 import { Button } from "../ui/button";
 import { Tv, Crown } from "lucide-react";
-import AdModals, { AdModalHandles } from "./AdModals";
-import { useRef } from "react";
+import dynamic from "next/dynamic";
+
+const DriverStandings = dynamic(() => import("./DriverStandings"), {
+  ssr: false,
+});
+
+const TrackInfoWidgets = dynamic(() => import("./TrackInfoWidgets"), {
+  ssr: false,
+});
 
 type GrandPrix = {
   name: string;
   slug: string;
-  lapCount: number;
+  circuit: {
+    lapCount: number;
+  };
 };
 type Driver = {
   position: number;
@@ -125,14 +133,14 @@ export default function StreamLayout({
 
             {/* Right Panel: Widgets */}
             <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}>
-                <TrackInfoWidgets lapCount={grandPrix.lapCount} trackMapImage={trackMapImage} />
+                <TrackInfoWidgets lapCount={grandPrix.circuit.lapCount} trackMapImage={trackMapImage} />
             </div>
 
             {/* Mobile-only Panels */}
             <div className="lg:hidden px-4">
                 <DriverStandings drivers={driverStandings} />
                 <div className="my-4">
-                    <TrackInfoWidgets lapCount={grandPrix.lapCount} trackMapImage={trackMapImage} />
+                    <TrackInfoWidgets lapCount={grandPrix.circuit.lapCount} trackMapImage={trackMapImage} />
                 </div>
                 <div className="my-4">
                      <AdPlaceholder label="Rewarded Ad Pop-up Trigger" className="h-[100px] w-full" />

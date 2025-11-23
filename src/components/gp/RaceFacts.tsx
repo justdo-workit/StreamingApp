@@ -13,98 +13,90 @@ import AdPlaceholder from "../shared/AdPlaceholder";
 type Circuit = {
   name: string;
   mapImageId: string;
+  mapImageUrl?: string;
   details: string;
   trackLength: string;
   lapCount: number;
   drsZones: number;
+  firstGrandPrix?: string;
+  raceDistance?: string;
+  fastestLapTime?: string;
+  fastestLapBy?: string; // e.g., "Lando Norris (2024)"
 };
 
 type RaceFactsProps = {
   circuit: Circuit;
 };
 
-const FactItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: string | number }) => (
-  <div className="flex items-center">
-    <Icon className="h-6 w-6 text-primary mr-4" />
-    <div>
-      <p className="text-sm font-normal text-muted-foreground">{label}</p>
-      <p className="font-bold">{value}</p>
-    </div>
-  </div>
-);
-
 export default function RaceFacts({ circuit }: RaceFactsProps) {
-  const mapImage = placeholderImages.find((img) => img.id === circuit.mapImageId);
+  const mapImage = circuit.mapImageUrl
+    ? {
+        imageUrl: circuit.mapImageUrl,
+        imageHint: circuit.name,
+      }
+    : placeholderImages.find((img) => img.id === circuit.mapImageId);
 
   return (
     <section>
       <h2 className="mb-6 text-center font-headline text-4xl font-bold">
         Race Facts
       </h2>
-      <Card>
-        {/* Desktop View */}
-        <div className="hidden md:grid md:grid-cols-2">
-          <div className="p-6">
-            <CardTitle className="font-headline font-bold">{circuit.name}</CardTitle>
-            <p className="mt-2 font-normal text-muted-foreground">{circuit.details}</p>
-            <div className="mt-6 grid grid-cols-2 gap-6">
-              <FactItem icon={Gauge} label="Track Length" value={circuit.trackLength} />
-              <FactItem icon={Repeat} label="Lap Count" value={circuit.lapCount} />
-              <FactItem icon={DraftingCompass} label="DRS Zones" value={circuit.drsZones} />
-              <AdPlaceholder label="Square Ad (250x250)" className="h-[250px] w-[250px] aspect-square"/>
-            </div>
-          </div>
-          {mapImage && (
-            <div className="relative min-h-[400px]">
+      <Card className="border-0 shadow-none bg-transparent">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* Left: Circuit Image */}
+          <div className="relative min-h-[220px] md:min-h-[360px] bg-black">
+            {mapImage && (
               <Image
                 src={mapImage.imageUrl}
                 alt={`Map of ${circuit.name}`}
                 fill
-                className="object-cover rounded-r-lg"
-                data-ai-hint={mapImage.imageHint}
+                className="object-contain"
+                data-ai-hint={(mapImage as any).imageHint}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                quality={80}
               />
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* Mobile View */}
-        <div className="md:hidden">
-            <Collapsible>
-                <CollapsibleTrigger asChild>
-                     <div className="flex items-center justify-between p-6">
-                        <div>
-                            <CardTitle className="font-headline font-bold">{circuit.name}</CardTitle>
-                            <p className="text-sm font-normal text-muted-foreground">Tap to see track info</p>
-                        </div>
-                        <Button variant="ghost" size="sm">
-                            <ChevronsUpDown className="h-4 w-4" />
-                            <span className="sr-only">Toggle</span>
-                        </Button>
-                     </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                    <CardContent>
-                         {mapImage && (
-                            <div className="relative h-[200px] w-full mb-4">
-                                <Image
-                                    src={mapImage.imageUrl}
-                                    alt={`Map of ${circuit.name}`}
-                                    fill
-                                    className="object-cover rounded-lg"
-                                    data-ai-hint={mapImage.imageHint}
-                                />
-                            </div>
-                        )}
-                        <p className="mb-6 font-normal text-muted-foreground">{circuit.details}</p>
-                        <div className="grid grid-cols-1 gap-4">
-                            <FactItem icon={Gauge} label="Track Length" value={circuit.trackLength} />
-                            <FactItem icon={Repeat} label="Lap Count" value={circuit.lapCount} />
-                            <FactItem icon={DraftingCompass} label="DRS Zones" value={circuit.drsZones} />
-                        </div>
-                        <AdPlaceholder label="Square Ad (250x250)" className="h-[250px] w-full mt-6"/>
-                    </CardContent>
-                </CollapsibleContent>
-            </Collapsible>
+          {/* Right: Stats Panel */}
+          <div className="flex flex-col p-4 md:p-6 bg-background">
+            <div className="text-sm text-white/70">Circuit Length</div>
+            <div className="mt-1 text-4xl md:text-5xl font-extrabold tracking-tight text-white">
+              {circuit.trackLength}
+            </div>
+            <div className="my-3 h-px w-full bg-white/10" />
+
+            <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-white">
+              <div>
+                <div className="text-xs uppercase text-white/60">First Grand Prix</div>
+                <div className="mt-1 text-lg font-semibold">
+                  {circuit.firstGrandPrix ?? "—"}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs uppercase text-white/60">Number of Laps</div>
+                <div className="mt-1 text-lg font-semibold">{circuit.lapCount}</div>
+              </div>
+            </div>
+            <div className="my-3 h-px w-full bg-white/10" />
+            <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-white">
+              <div>
+                <div className="text-xs uppercase text-white/60">Fastest lap time</div>
+                <div className="mt-1 text-lg font-extrabold">
+                  {circuit.fastestLapTime ?? "—"}
+                </div>
+                {circuit.fastestLapBy && (
+                  <div className="text-xs text-white/60">{circuit.fastestLapBy}</div>
+                )}
+              </div>
+              <div>
+                <div className="text-xs uppercase text-white/60">Race Distance</div>
+                <div className="mt-1 text-lg font-semibold">
+                  {circuit.raceDistance ?? "—"}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
     </section>

@@ -42,8 +42,8 @@ export default function SessionStatusButton({ sessionTime, grandPrixSlug }: Sess
 
     if (statusInfo.status === 'live') {
         return (
-            <Button asChild className="mt-4 w-full">
-                <Link href={`/stream/${grandPrixSlug}`}>
+            <Button asChild size="sm" className="mt-2 w-full">
+                <Link prefetch href={`/stream/${grandPrixSlug}`}>
                     <PlayCircle className="mr-2 h-4 w-4 animate-pulse" /> {statusInfo.text}
                 </Link>
             </Button>
@@ -52,9 +52,10 @@ export default function SessionStatusButton({ sessionTime, grandPrixSlug }: Sess
 
     return (
         <Button 
+            size="sm"
             variant={statusInfo.status === 'completed' ? 'secondary' : 'outline'} 
             disabled={statusInfo.disabled} 
-            className="mt-4 w-full"
+            className="mt-2 w-full"
         >
             {statusInfo.text}
         </Button>
