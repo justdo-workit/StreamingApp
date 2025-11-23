@@ -1,19 +1,40 @@
 import type {Metadata} from 'next';
-import { Roboto, Roboto_Condensed } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
-const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-roboto',
+const fontSans = localFont({
+  src: [
+    {
+      path: '../../public/fonts/Formula1-Regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Formula1-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Formula1-Black.ttf',
+      weight: '900',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-sans',
 });
 
-const robotoCondensed = Roboto_Condensed({
-  subsets: ['latin'],
-  weight: ['700'],
-  variable: '--font-roboto-condensed',
+const fontHeadline = localFont({
+  src: [
+    {
+      path: '../../public/fonts/Formula1-Wide.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-headline',
 });
+
 
 export const metadata: Metadata = {
   title: 'ApexStream',
@@ -27,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${roboto.variable} ${robotoCondensed.variable} font-sans antialiased`}>
+      <body className={`${fontSans.variable} ${fontHeadline.variable} font-sans antialiased`}>
         {children}
         <Toaster />
       </body>
