@@ -28,10 +28,16 @@ export default function StreamPage({ params }: StreamPageProps) {
   }
 
   const trackMapImage = placeholderImages.find(img => img.id === 'track-map-small');
+  const flagBySlug: Record<string, string> = {
+    bahrain: "https://flagcdn.com/w80/bh.png",
+    "saudi-arabia": "https://flagcdn.com/w80/sa.png",
+    YasMarina: "https://flagcdn.com/w80/ae.png",
+  };
+  const flagUrl = flagBySlug[gp.slug as keyof typeof flagBySlug];
 
   return (
     <div className="flex min-h-screen flex-col">
-       <Header grandPrixName={gp.name} showBack a_href={`/grand-prix/${gp.slug}`} />
+       <Header grandPrixName={gp.name} showBack a_href={`/grand-prix/${gp.slug}`} showTimer sessionTitle="Race" flagUrl={flagUrl} lapCount={gp.circuit.lapCount} />
       <main className="flex-grow">
         <StreamLayout
           grandPrix={gp}
