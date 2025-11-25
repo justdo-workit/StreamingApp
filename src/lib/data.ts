@@ -6,78 +6,77 @@ export const placeholderImages: ImagePlaceholder[] = PlaceHolderImages;
 // Dates should be in the future for countdowns to work.
 // Let's set them relative to a future date.
 const now = new Date();
-const futureDate = (days: number, hours: number = 0, minutes: number = 0) =>
-  new Date(now.getTime() + days * 24 * 60 * 60 * 1000 + hours * 60 * 60 * 1000 + minutes * 60 * 1000).toISOString();
-const liveDate = (minutes: number) => new Date(now.getTime() - minutes * 60 * 1000).toISOString();
+
+function futureDate(iso: string): string;
+function futureDate(days: number, hours?: number, minutes?: number): string;
+function futureDate(a: number | string, hours: number = 0, minutes: number = 0): string {
+  if (typeof a === 'string') {
+    return new Date(a).toISOString();
+  }
+  return new Date(
+    now.getTime() + a * 24 * 60 * 60 * 1000 + hours * 60 * 60 * 1000 + minutes * 60 * 1000
+  ).toISOString();
+}
+
+function liveDate(iso: string): string;
+function liveDate(minutes: number): string;
+function liveDate(a: number | string): string {
+  if (typeof a === 'string') {
+    return new Date(a).toISOString();
+  }
+  return new Date(now.getTime() - a * 60 * 1000).toISOString();
+}
 
 export const grandPrixes = [
   {
-    name: 'Quatar Grand Prix',
-    slug: 'bahrain',
-    date: 'Mar 29-31',
-    cover : 'https://i.pinimg.com/1200x/33/ad/52/33ad52fc1cf22427acf6e7de8555e0f0.jpg',
+    name: 'Qatar Grand Prix',
+    slug: 'qatar',
+    date: 'Nov 28-30',
+    cover: 'https://1qvc381awg.ucarecd.net/1f397391-2ac6-4333-900a-3367cea8b4b2/qatar2025.png',
     circuit: {
-      name: 'Bahrain International Circuit',
-      mapImageId: 'circuit-map',
+      name: 'Lusail International Circuit',
+      mapImageId: 'qatar-circuit-map',
       mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Qatar_Circuit.webp',
-      details: 'A modern desert track known for heavy braking zones and great overtaking opportunities.',
-      trackLength: '5.412 km',
+      details: 'A fast, flowing night circuit with long corners that reward aerodynamic efficiency.',
+      trackLength: '5.419 km',
       lapCount: 57,
-      drsZones: 3,
+      drsZones: 2,
     },
     schedule: [
-      { id: 1, name: 'Practice 1', time: liveDate(0) },
-      { id: 2, name: 'Practice 2', time: futureDate(0, 2) },
-      { id: 3, name: 'Practice 3', time: futureDate(1, 13) },
-      { id: 4, name: 'Qualifying', time: futureDate(1, 17) },
-      { id: 5, name: 'Race', time: futureDate(2, 17) },
+      // Qatar 2025 is a sprint weekend:
+      { id: 1, name: 'Practice 1',        time: liveDate('2025-11-28T16:30:00+03:00') },
+      { id: 2, name: 'Sprint Qualifying', time: futureDate('2025-11-28T20:30:00+03:00') },
+      { id: 3, name: 'Sprint',            time: futureDate('2025-11-29T17:00:00+03:00') },
+      { id: 4, name: 'Qualifying',        time: futureDate('2025-11-29T21:00:00+03:00') },
+      { id: 5, name: 'Race',              time: futureDate('2025-11-30T19:00:00+03:00') },
     ],
   },
   {
-    name: 'Saudi Arabian Grand Prix',
-    slug: 'saudi-arabia',
-    date: 'Apr 5-7',
-    cover : 'https://i.pinimg.com/1200x/9c/ad/df/9caddf11cac5c53ad469f5a7f77cb962.jpg',
-    circuit: {
-      name: 'Jeddah Corniche Circuit',
-      mapImageId: 'circuit-map',
-       mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Abu_Dhabi_Circuit.webp',
-      details: 'A fast and flowing street circuit with high-speed corners.',
-      trackLength: '6.174 km',
-      lapCount: 50,
-      drsZones: 3,
-    },
-    schedule: [
-      { id: 1, name: 'Practice 1', time: futureDate(7, 15) },
-      { id: 2, name: 'Practice 2', time: futureDate(7, 19) },
-      { id: 3, name: 'Practice 3', time: futureDate(8, 15) },
-      { id: 4, name: 'Qualifying', time: futureDate(8, 19) },
-      { id: 5, name: 'Race', time: futureDate(9, 19) },
-    ],
-  },
-  {
-    name: 'Abudhabi Grand Prix',
-    slug: 'YasMarina',
-    date: 'Apr 19-21',
-    cover : 'https://i.pinimg.com/1200x/33/ad/52/33ad52fc1cf22427acf6e7de8555e0f0.jpg' ,
+    name: 'Abu Dhabi Grand Prix',
+    slug: 'abu-dhabi',
+    date: 'Dec 5-7',
+    cover: 'https://1qvc381awg.ucarecd.net/0c6e6220-91cb-4225-9ea4-b41dbdb843f2/abudhabi.png',
     circuit: {
       name: 'Yas Marina Circuit',
-      mapImageId: 'circuit-map',
-       mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Qatar_Circuit.webp',
-      details: 'A temporary street circuit in Melbourne with a mix of corners.',
-      trackLength: '5.278 km',
+      mapImageId: 'abu-dhabi-circuit-map',
+      
+      mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Abu_Dhabi_Circuit.webp',
+      details: 'A twilight race on a modern circuit featuring a mix of slow corners and long straights.',
+      trackLength: '5.281 km',
       lapCount: 58,
-      drsZones: 4,
+      drsZones: 2,
     },
-     schedule: [
-      { id: 1, name: 'Practice 1', time: futureDate(21, 12) },
-      { id: 2, name: 'Practice 2', time: futureDate(21, 16) },
-      { id: 3, name: 'Practice 3', time: futureDate(22, 12) },
-      { id: 4, name: 'Qualifying', time: futureDate(22, 16) },
-      { id: 5, name: 'Race', time: futureDate(23, 15) },
+    schedule: [
+      // Typical non-sprint weekend layout (times are placeholders, adjust to official times you prefer):
+      { id: 1, name: 'Practice 1', time: liveDate('2025-12-05T13:30:00+04:00') },
+      { id: 2, name: 'Practice 2', time: futureDate('2025-12-05T17:00:00+04:00') },
+      { id: 3, name: 'Practice 3', time: futureDate('2025-12-06T14:30:00+04:00') },
+      { id: 4, name: 'Qualifying', time: futureDate('2025-12-06T18:00:00+04:00') },
+      { id: 5, name: 'Race',       time: futureDate('2025-12-07T17:00:00+04:00') },
     ],
-  }
+  },
 ];
+
 
 export const driverStandings = [
   { position: 1, driver: 'VER', time: '+0.000', points: 25 },

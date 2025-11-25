@@ -9,7 +9,7 @@ import { grandPrixes, placeholderImages } from '@/lib/data';
 
 export default function Home() {
   const currentGrandPrix = grandPrixes[0];
-  const upcomingGPs = grandPrixes.slice(1);
+  const upcomingGPs = grandPrixes;
   const heroImage = placeholderImages.find((img) => img.id === 'home-hero');
 
   // very small helper to map GP name to ISO country code for flagcdn

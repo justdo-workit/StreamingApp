@@ -27,6 +27,11 @@ export default function GrandPrixPage({ params }: GrandPrixPageProps) {
   }
 
   const heroImage = placeholderImages.find((img) => img.id === 'gp-hero');
+  const heroBySlug: Record<string, string> = {
+    qatar: "https://media.formula1.com/image/upload/t_16by9Centre/c_lfill,w_3392/q_auto/v1740000000/fom-website/campaign/GettyImages-1443333888.webp",
+    "abu-dhabi": "https://media.formula1.com/image/upload/c_lfill,w_3392/q_auto/v1740000000/content/dam/fom-website/manual/XPB_Images/XPB_1025166_HiRes.webp",
+  };
+  const heroUrlOverride = heroBySlug[gp.slug as keyof typeof heroBySlug];
   const raceSession = gp.schedule.find(s => s.name === 'Race');
 
   return (
@@ -35,18 +40,18 @@ export default function GrandPrixPage({ params }: GrandPrixPageProps) {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative h-[40vh] min-h-[300px] w-full text-white">
-            {heroImage && (
+            {(heroUrlOverride || heroImage) && (
               <Image
-                src={heroImage.imageUrl}
-                alt={heroImage.description}
+                src={heroUrlOverride || heroImage!.imageUrl}
+                alt={heroImage ? heroImage.description : gp.name}
                 fill
-                className="object-cover"
+                className="object-cover object-bottom  "
                 priority
                 quality={70}
-                data-ai-hint={heroImage.imageHint}
+                data-ai-hint={heroImage?.imageHint}
               />
             )}
-            <div className="absolute inset-0 bg-black/70" />
+            <div className="absolute inset-0 bg-black/30" />
             <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
                 <h1 className="font-headline text-4xl font-bold md:text-6xl">{gp.name}</h1>
                 <p className="mt-2 text-lg font-normal text-gray-300">{gp.date}</p>
