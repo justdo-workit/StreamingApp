@@ -10,6 +10,10 @@ import { Button } from "../ui/button";
 import { Tv, Crown, ChevronLeft, ChevronRight } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../ui/select";
+import { useF1Stream } from "@/hooks/useF1Stream";
+import LiveTimingTower from "./LiveTimingTower";
+import LiveTrackMap from "./LiveTrackMap";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const DriverStandings = dynamic(() => import("./DriverStandings"), {
   ssr: false,
@@ -24,6 +28,7 @@ type GrandPrix = {
   slug: string;
   circuit: {
     lapCount: number;
+    mapImageUrl?: string;
   };
 };
 type Driver = {
@@ -38,7 +43,7 @@ type StreamLayoutProps = {
   grandPrix: GrandPrix;
   driverStandings: Driver[];
   streamSources: StreamSource[];
-  streamingUrl: string;
+  streamingUrls: Record<string, string>;
   trackMapImage?: ImagePlaceholder;
 };
 
@@ -66,7 +71,7 @@ export default function StreamLayout({
   grandPrix,
   driverStandings,
   streamSources,
-  streamingUrl,
+  streamingUrls,
   trackMapImage
 }: StreamLayoutProps) {
   const [isTheatreMode, setIsTheatreMode] = useState(false);
@@ -74,6 +79,8 @@ export default function StreamLayout({
   // Start with a synthetic "Default" selection so no language button is red until clicked
   const defaultSource: StreamSource = { id: "default", name: "Default" };
   const [currentSource, setCurrentSource] = useState<StreamSource>(defaultSource);
+  const [isStreamLoading, setIsStreamLoading] = useState(false);
+  const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const adModalRef = useRef<AdModalHandles>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isScrollable, setIsScrollable] = useState(false);
@@ -97,6 +104,14 @@ export default function StreamLayout({
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
   }, []);
+
+  // Resolve OpenF1 session params (free polling -> near-live)
+  const countryBySlug: Record<string, string> = {
+    "qatar": "Qatar",
+    "abu-dhabi": "United Arab Emirates",
+  };
+  const country = countryBySlug[grandPrix.slug] ?? grandPrix.slug;
+  const f1 = useF1Stream({ country, year: "latest", session: "Race" });
 
   // Simple timer for TV mode overlay
   useEffect(() => {
@@ -140,6 +155,40 @@ export default function StreamLayout({
      });
   }
 
+  const currentUrl = (() => {
+    if (isHdUnlocked && streamingUrls["unlockHD"]) {
+      return streamingUrls["unlockHD"];
+    }
+    const key = currentSource.id === "default" ? "default" : currentSource.id;
+    return streamingUrls[key] ?? streamingUrls["default"];
+  })();
+
+  useEffect(() => {
+    if (!currentUrl) return;
+    setIsStreamLoading(true);
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+    }
+    loadingTimeoutRef.current = setTimeout(() => {
+      setIsStreamLoading(false);
+      loadingTimeoutRef.current = null;
+    }, 2000);
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+    };
+  }, [currentUrl]);
+
+  const handleStreamLoaded = () => {
+    setIsStreamLoading(false);
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+      loadingTimeoutRef.current = null;
+    }
+  };
+
   return (
     <div
       ref={containerRef}
@@ -159,15 +208,17 @@ export default function StreamLayout({
         )}>
             {/* Left Panel: Driver Standings */}
             <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}>
-                <DriverStandings drivers={driverStandings} />
+                <LiveTimingTower tower={f1.tower} connected={f1.connected} />
             </div>
 
             {/* Center: Video Player */}
             <div className="flex flex-col gap-4">
                 <div className="relative">
                   <VideoPlayer 
-                      url={streamingUrl} 
+                      url={currentUrl} 
                       isHd={isHdUnlocked}
+                      showLoading={isStreamLoading}
+                      onLoaded={handleStreamLoaded}
                       onFirstFullscreenClick={() => adModalRef.current?.showOnClickAd()}
                       curved={false}
                   />
@@ -312,16 +363,38 @@ export default function StreamLayout({
 
             {/* Right Panel: Widgets (desktop) - show map only, hide HUD */}
             <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}> 
-                <TrackInfoWidgets lapCount={grandPrix.circuit.lapCount} trackMapImage={trackMapImage} showHud={false} />
+                <TrackInfoWidgets
+                  lapCount={grandPrix.circuit.lapCount}
+                  trackMapImage={trackMapImage}
+                  showHud={false}
+                  currentLap={f1.currentLap}
+                  useLiveMap
+                  livePoints={f1.trackPoints.points}
+                  liveTrails={f1.trackPoints.trails}
+                  liveBackgroundUrl={undefined}
+                  liveBackgroundAlt={`${grandPrix.name} live map`}
+                />
+                {/* LiveTrackMap duplicated card removed; TrackInfoWidgets shows live map */}
             </div>
 
             {/* Mobile-only Panels */}
             {!isTheatreMode && (
             <div className="lg:hidden px-4">
-                <DriverStandings drivers={driverStandings} />
+                <LiveTimingTower tower={f1.tower} connected={f1.connected} />
                 <div className="my-4">
-                    <TrackInfoWidgets lapCount={grandPrix.circuit.lapCount} trackMapImage={trackMapImage} showHud />
+                    <TrackInfoWidgets
+                      lapCount={grandPrix.circuit.lapCount}
+                      trackMapImage={trackMapImage}
+                      showHud
+                      currentLap={f1.currentLap}
+                      useLiveMap
+                      livePoints={f1.trackPoints.points}
+                      liveTrails={f1.trackPoints.trails}
+                      liveBackgroundUrl={undefined}
+                      liveBackgroundAlt={`${grandPrix.name} live map`}
+                    />
                 </div>
+                {/* LiveTrackMap duplicated card removed on mobile; TrackInfoWidgets shows live map */}
                 <div className="my-4">
                      <AdPlaceholder label="Rewarded Ad Pop-up Trigger" className="h-[100px] w-full" />
                      <Button onClick={handleUnlockStats} className="w-full mt-2">Unlock Stats</Button>

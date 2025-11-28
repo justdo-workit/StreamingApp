@@ -3,7 +3,7 @@ import {
   grandPrixes,
   driverStandings,
   streamSources,
-  streamingUrl,
+  streamingUrls,
   placeholderImages
 } from "@/lib/data";
 import StreamLayout from "@/components/stream/StreamLayout";
@@ -43,7 +43,7 @@ export default function StreamPage({ params }: StreamPageProps) {
           grandPrix={gp}
           driverStandings={driverStandings}
           streamSources={streamSources}
-          streamingUrl={streamingUrl}
+          streamingUrls={streamingUrls}
           trackMapImage={trackMapImage}
         />
       </main>

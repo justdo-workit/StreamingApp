@@ -50,6 +50,9 @@ export default function Home() {
           )}
           <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
+            <h1 className="text-3xl font-headline font-bold tracking-tight md:text-5xl">
+              Slipstreams
+            </h1>
             <p className="mt-4 max-w-2xl font-normal text-gray-300 md:text-4xl">
               Your front-row seat to every Formula 1 race. Live, fast, and for the fans.
             </p>
@@ -60,7 +63,7 @@ export default function Home() {
               </Link>
             </Button>
             <p className="mt-4 text-sm font-normal text-gray-400">
-              for quick updates and alterts , join our telegram channel
+              for quick updates and alterts ,<br/> join our Telegram or Discord channel
             </p>
           </div>
         </section>
@@ -99,7 +102,7 @@ export default function Home() {
                       return (
                         <div className="absolute inset-x-0 bottom-0 z-10 p-4">
                           <div className="flex items-center gap-3">
-                            <div className="relative h-10 w-10 rounded-full ring-2 ring-white/80 bg-neutral-900 overflow-hidden">
+                            <div className="relative h-10 w-14   overflow-hidden">
                               {code ? (
                                 <Image
                                   src={`https://flagcdn.com/48x36/${code}.png`}
@@ -138,7 +141,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="space-y-4 font-normal text-muted-foreground">
                 <p>
-                  ApexStream is a premier destination for Formula 1 enthusiasts, offering a seamless and immersive streaming experience. We are dedicated to providing high-quality, reliable access to every Grand Prix weekend, from the first practice session to the final lap of the race. Our platform is built with a mobile-first approach, ensuring you never miss a moment, whether you&apos;re at home or on the go.
+                  Slipstreams is built for F1 fans who want fast, simple access to live race weekends without the clutter.
                 </p>
                 <p>
                   Beyond live streams, we provide dynamic race data, including live driver standings, lap timings, and interactive track maps. Our goal is to enhance your viewing experience by bringing all the critical information directly to your screen, creating a comprehensive hub for every F1 fan.
@@ -154,7 +157,7 @@ export default function Home() {
           />
 
           {/* Disclaimer and Policies */}
-          <section className="grid gap-8 md:grid-cols-2">
+          <section className="">
             <Card>
               <CardHeader>
                 <CardTitle className="font-headline text-2xl font-bold">
@@ -163,25 +166,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="text-sm font-normal text-muted-foreground">
                 <p>
-                  ApexStream is an independent platform and is not affiliated with Formula One Group, FIA, or any of its associated companies. All trademarks and copyrights belong to their respective owners. We do not own, host, or stream any copyrighted material. This service provides links to third-party streaming sources and does not verify the legality or quality of the content. Users are responsible for their own actions and must comply with their local laws.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl font-bold">
-                  Privacy & Rules
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm font-normal text-muted-foreground">
-                <p>
-                  <strong>1. Data Usage:</strong> We collect anonymous usage data to improve our service and optimize ad placements. We do not sell personal data.
-                </p>
-                <p>
-                  <strong>2. Cookies:</strong> We use cookies to enhance user experience. By using ApexStream, you consent to our use of cookies.
-                </p>
-                <p>
-                  <strong>3. Conduct:</strong> Please be respectful in any community features. Hate speech or harassment will not be tolerated.
+                  Slipstreams is an independent, unofficial platform and is not affiliated with Formula One Group, FIA, or any of their associated companies. All trademarks and copyrights, including F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, and GRAND PRIX, are owned by Formula One Licensing B.V. and other respective owners. We do not own, host, or stream copyrighted material; the service only provides links to third-party sources, and users are solely responsible for ensuring compliance with local laws.
                 </p>
               </CardContent>
             </Card>

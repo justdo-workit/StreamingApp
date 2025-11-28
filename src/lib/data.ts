@@ -38,9 +38,13 @@ export const grandPrixes = [
       mapImageId: 'qatar-circuit-map',
       mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Qatar_Circuit.webp',
       details: 'A fast, flowing night circuit with long corners that reward aerodynamic efficiency.',
+      firstGrandPrix: '2021',
+      raceDistance :'308.611 km',
       trackLength: '5.419 km',
+      fastestLapTime:'Lando Norris (1:22.384) ',
       lapCount: 57,
       drsZones: 2,
+      //	raceDistance :'308.611 km', fastestlaptime:'Lando Norris (1:22.384) ',
     },
     schedule: [
       // Qatar 2025 is a sprint weekend:
@@ -62,7 +66,10 @@ export const grandPrixes = [
       
       mapImageUrl: 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Abu_Dhabi_Circuit.webp',
       details: 'A twilight race on a modern circuit featuring a mix of slow corners and long straights.',
-      trackLength: '5.281 km',
+      firstGrandPrix: '2009',
+      raceDistance :'306.183 km',
+      trackLength: '5.287 km',
+      fastestLapTime:' Kevin Magnussen (1:25.637) ',
       lapCount: 58,
       drsZones: 2,
     },
@@ -109,4 +116,11 @@ export const streamSources = [
     { id: 'bk2', name: 'Backup 2' },
 ];
 
-export const streamingUrl = "https://sportzonline.top/channels/hd/hd8.php";
+export const streamingUrls: Record<string, string> = {
+  default: "https://ihatestreams.xyz/embed/1a0edc01-8363-11f0-b385-bc2411b21e0d",
+  unlockHD: "https://ihatestreams.xyz/embed/1a0edc01-8363-11f0-b385-bc2411b21e0d",
+  de: "https://ihatestreams.xyz/embed/e3ed1ecf-3cdb-11f0-afb1-ecf4bbdafde4",
+  it: "https://ihatestreams.xyz/embed/f2c69cd3-8715-11f0-b385-bc2411b21e0d",
+  es: "https://ihatestreams.xyz/embed/cf8088c4-8712-11f0-b385-bc2411b21e0d",
+  bk1: "https://sportzonline.top/channels/hd/hd8.php",
+};

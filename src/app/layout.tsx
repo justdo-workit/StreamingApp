@@ -15,8 +15,8 @@ const fontHeadline = localFont({
 
 
 export const metadata: Metadata = {
-  title: 'ApexStream',
-  description: 'The ultimate F1 streaming experience.',
+  title: 'Slipstreams',
+  description: 'Slipstreams – the ultimate F1 streaming experience.',
 };
 
 export default function RootLayout({

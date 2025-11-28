@@ -1,23 +1,35 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Thermometer, Droplets } from "lucide-react";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
+import LiveTrackMap from "./LiveTrackMap";
 
 type TrackInfoWidgetsProps = {
     lapCount: number;
     trackMapImage?: ImagePlaceholder;
     showHud?: boolean;
+    currentLap?: number; // live override
+    useLiveMap?: boolean;
+    livePoints?: Array<{ num: number; x: number; y: number; colour?: string }>;
+    liveTrails?: Array<{ num: number; pts: Array<{ x: number; y: number }>; colour?: string }>;
+    liveBackgroundUrl?: string;
+    liveBackgroundAlt?: string;
 }
 
-export default function TrackInfoWidgets({ lapCount, trackMapImage, showHud = true }: TrackInfoWidgetsProps) {
-    const [currentLap, setCurrentLap] = useState(1);
-    const [remainingLaps, setRemainingLaps] = useState(lapCount - 1);
+export default function TrackInfoWidgets({ lapCount, trackMapImage, showHud = true, currentLap: currentLapProp, useLiveMap, livePoints, liveTrails, liveBackgroundUrl, liveBackgroundAlt }: TrackInfoWidgetsProps) {
+    const [currentLap, setCurrentLap] = useState(currentLapProp ?? 1);
+    const [remainingLaps, setRemainingLaps] = useState(lapCount - (currentLapProp ?? 1));
     const [elapsed, setElapsed] = useState(0);
     
+    // Simulate laps only when live currentLap is not provided
     useEffect(() => {
+        if (typeof currentLapProp === 'number') {
+            setCurrentLap(currentLapProp);
+            setRemainingLaps(Math.max(0, lapCount - currentLapProp));
+            return;
+        }
         const lapInterval = setInterval(() => {
             setCurrentLap(prev => {
                 const nextLap = prev < lapCount ? prev + 1 : lapCount;
@@ -27,7 +39,7 @@ export default function TrackInfoWidgets({ lapCount, trackMapImage, showHud = tr
         }, 90000); //~90 seconds per lap
 
         return () => clearInterval(lapInterval);
-    }, [lapCount]);
+    }, [lapCount, currentLapProp]);
 
     useEffect(() => {
         const t = setInterval(() => setElapsed((s) => s + 1), 1000);
@@ -67,19 +79,19 @@ export default function TrackInfoWidgets({ lapCount, trackMapImage, showHud = tr
             </Card>
             )}
 
-            {trackMapImage && (
+            {(trackMapImage) && (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-sm font-medium">Track Map</CardTitle>
+                        <CardTitle className="text-sm font-medium">Live Track Map</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="relative aspect-video w-full">
-                            <Image 
-                                src={trackMapImage.imageUrl}
-                                alt={trackMapImage.description}
-                                fill
-                                className="object-contain"
-                                data-ai-hint={trackMapImage.imageHint}
+                            <LiveTrackMap
+                              backgroundUrl={useLiveMap ? liveBackgroundUrl : undefined}
+                              backgroundAlt={liveBackgroundAlt || trackMapImage.description}
+                              points={livePoints || []}
+                              trails={liveTrails}
+                              heightClass="aspect-video"
                             />
                         </div>
                     </CardContent>
