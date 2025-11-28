@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flag } from 'lucide-react';
+import AdBanner from '@/components/shared/AdBanner';
 import AdPlaceholder from '@/components/shared/AdPlaceholder';
 import Footer from '@/components/layout/Footer';
 import { grandPrixes, placeholderImages } from '@/lib/data';
@@ -69,11 +70,15 @@ export default function Home() {
         </section>
 
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          {/* Ad Placeholder below Hero */}
-          <AdPlaceholder
-            label="Banner Ad (970x90)"
-            className="my-8 h-[90px] w-full"
-          />
+          {/* Top banner ad (728x90) below Hero */}
+          <div className="my-8 flex justify-center">
+            <AdBanner
+              width={728}
+              height={90}
+              zoneKey="912074aa3de30a2f3cb2b3432d994606"
+              scriptSrc="//www.highperformanceformat.com/912074aa3de30a2f3cb2b3432d994606/invoke.js"
+            />
+          </div>
 
           {/* Up Next Section */}
           <section className="py-12">
@@ -150,11 +155,15 @@ export default function Home() {
             </Card>
           </section>
 
-          {/* Ad Placeholder above Disclaimer */}
-          <AdPlaceholder
-            label="CPM Display Ad (300x250)"
-            className="mx-auto my-8 h-[250px] w-[300px]"
-          />
+          {/* 300x250 ad above Disclaimer */}
+          <div className="mx-auto my-8 flex justify-center">
+            <AdBanner
+              width={300}
+              height={250}
+              zoneKey="9942bce170e25aead636127279479c68"
+              scriptSrc="//www.highperformanceformat.com/9942bce170e25aead636127279479c68/invoke.js"
+            />
+          </div>
 
           {/* Disclaimer and Policies */}
           <section className="">

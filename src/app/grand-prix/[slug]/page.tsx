@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { grandPrixes, placeholderImages } from "@/lib/data";
 import AdPlaceholder from "@/components/shared/AdPlaceholder";
+import BottomPageAd from "@/components/shared/BottomPageAd";
 import CountdownTimer from "@/components/gp/CountdownTimer";
 import ScheduleGrid from "@/components/gp/ScheduleGrid";
 import RaceFacts from "@/components/gp/RaceFacts";
@@ -72,6 +73,9 @@ export default function GrandPrixPage({ params }: GrandPrixPageProps) {
             {/* Race Facts */}
             <RaceFacts circuit={gp.circuit} />
         </div>
+
+        {/* Bottom of page ad */}
+        <BottomPageAd />
       </main>
       <Footer />
     </div>
