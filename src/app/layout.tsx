@@ -31,13 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(s){s.dataset.zone='10248228',s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))",
-          }}
-          
-        />
+        
         <link rel="icon" href="/M.png" sizes="any" />
       </head>
       <body className={`${fontSans.variable} ${fontHeadline.variable} font-sans antialiased`}>
