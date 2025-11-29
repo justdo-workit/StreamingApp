@@ -38,7 +38,7 @@ export default async function GrandPrixPage({ params }: GrandPrixPageProps) {
   const raceSession = gp.schedule.find(s => s.name === 'Race');
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-hidden ">
        <Header grandPrixName="Slipstreams" showBack a_href="/" />
       <main className="flex-grow">
         {/* Hero Section */}

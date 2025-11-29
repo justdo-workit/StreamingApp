@@ -37,7 +37,7 @@ export default function Home() {
   const heroFlagCode = getCountryCode(currentGrandPrix.name);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-hidden ">
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative h-[95vh] min-h-[400px] w-full text-white">
