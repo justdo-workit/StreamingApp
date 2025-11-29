@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Analytics } from "@vercel/analytics/next"
+import AppShell from "@/components/layout/AppShell";
 const fontSans = localFont({
   src: '../fonts/f1Fonts/Formula1-Regular-1.ttf',
   variable: '--font-sans',
@@ -40,9 +41,11 @@ export default function RootLayout({
         <link rel="icon" href="/M.png" sizes="any" />
       </head>
       <body className={`${fontSans.variable} ${fontHeadline.variable} font-sans antialiased`}>
-        {children}
-        <Toaster />
-        <Analytics />
+        <AppShell>
+          {children}
+          <Toaster />
+          <Analytics />
+        </AppShell>
       </body>
     </html>
   );
