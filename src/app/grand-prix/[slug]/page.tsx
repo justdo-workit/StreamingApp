@@ -2,26 +2,28 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { grandPrixes, placeholderImages } from "@/lib/data";
 import AdPlaceholder from "@/components/shared/AdPlaceholder";
-import BottomPageAd from "@/components/shared/BottomPageAd";
+import GpHeroAd from "@/components/shared/GpHeroAd";
 import CountdownTimer from "@/components/gp/CountdownTimer";
 import ScheduleGrid from "@/components/gp/ScheduleGrid";
 import RaceFacts from "@/components/gp/RaceFacts";
 import Footer from "@/components/layout/Footer";
+import GpBottomAd from "@/components/shared/GpBottomAd";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/layout/Header";
 
 type GrandPrixPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 export function generateStaticParams() {
   return grandPrixes.map((g) => ({ slug: g.slug }));
 }
 
-export default function GrandPrixPage({ params }: GrandPrixPageProps) {
-  const gp = grandPrixes.find((g) => g.slug === params.slug);
+export default async function GrandPrixPage({ params }: GrandPrixPageProps) {
+  const { slug } = await params;
+  const gp = grandPrixes.find((g) => g.slug === slug);
 
   if (!gp) {
     notFound();
@@ -61,21 +63,16 @@ export default function GrandPrixPage({ params }: GrandPrixPageProps) {
         </section>
 
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            {/* Ad Placeholder below Countdown */}
-            <AdPlaceholder label="Banner Ad (970x90)" className="my-8 h-[90px] w-full" />
+            {/* Ad below Countdown */}
+            <GpHeroAd />
 
             {/* Schedule Grid */}
             <ScheduleGrid schedule={gp.schedule} grandPrixSlug={gp.slug} />
-
-            {/* Ad Placeholder between schedule and facts */}
-            <AdPlaceholder label="Inline Display Ad (728x90)" className="my-12 h-[90px] w-full max-w-4xl mx-auto" />
-
             {/* Race Facts */}
             <RaceFacts circuit={gp.circuit} />
         </div>
-
-        {/* Bottom of page ad */}
-        <BottomPageAd />
+        {/* Bottom page ad */}
+        <GpBottomAd />
       </main>
       <Footer />
     </div>

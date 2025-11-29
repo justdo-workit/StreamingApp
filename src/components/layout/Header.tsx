@@ -51,18 +51,25 @@ export default function Header({ grandPrixName, showBack = false, a_href="/", sh
               </Link>
             </Button>
           )}
-          {/* Mobile-only: stream name + GP name */}
-          <div className="sm:hidden flex items-center gap-2 text-sm font-medium truncate">
-            <span className="truncate">stream-name</span>
-            <span className="text-muted-foreground">•</span>
-            <span className="truncate">{grandPrixName}</span>
-          </div>
+          {/* App name at top-left */}
+          <Link href="/" className=" hidden text-sm font-semibold tracking-tight">
+            Slipstreams
+          </Link>
         </div>
 
         {/* Center: Title or Timer chip */}
-        <div className="flex-1 hidden sm:flex justify-center">
+        <div className="flex-1  sm:flex justify-center">
           {!showTimer ? (
-            <h2 className="text-lg font-semibold tracking-tight truncate">{grandPrixName}</h2>
+            <div className="flex items-center gap-2 max-w-[70vw]">
+              {flagUrl && (
+                <div className="relative h-6 w-8 overflow-hidden rounded-md">
+                  <Image src={flagUrl} alt="flag" fill className="object-cover" />
+                </div>
+              )}
+              <h2 className="text-lg font-semibold tracking-tight truncate">
+                {grandPrixName}
+              </h2>
+            </div>
           ) : (
             <div className="flex items-center gap-3 rounded-xl bg-card px-3 py-2 shadow-sm border">
               {flagUrl && (
@@ -80,12 +87,7 @@ export default function Header({ grandPrixName, showBack = false, a_href="/", sh
           )}
         </div>
 
-        {/* Right: Laps */}
-        <div className="min-w-[64px] pr-4 text-right hidden sm:block">
-          {lapCount && showTimer && (
-            <div className=" text-2xl font-extrabold">{currentLap} / {lapCount}</div>
-          )}
-        </div>
+       
       </div>
     </header>
   );

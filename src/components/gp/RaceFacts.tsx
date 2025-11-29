@@ -38,7 +38,7 @@ export default function RaceFacts({ circuit }: RaceFactsProps) {
 
   return (
     <section>
-      <h2 className="mb-6 text-center font-headline text-4xl font-bold">
+      <h2 className="mb-6 mt-20 text-center font-headline text-4xl font-bold">
         Race Facts
       </h2>
       <Card className="border-0 shadow-none bg-transparent">

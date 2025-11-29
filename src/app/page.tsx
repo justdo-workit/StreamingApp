@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flag } from 'lucide-react';
-import AdBanner from '@/components/shared/AdBanner';
+import HomeTopBannerAd from '@/components/shared/HomeTopBannerAd';
+import HomeAfterIntroAd from '@/components/shared/HomeAfterIntroAd';
 import AdPlaceholder from '@/components/shared/AdPlaceholder';
 import Footer from '@/components/layout/Footer';
 import { grandPrixes, placeholderImages } from '@/lib/data';
@@ -33,17 +34,30 @@ export default function Home() {
     return '';
   };
 
+  const heroFlagCode = getCountryCode(currentGrandPrix.name);
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-[90vh] min-h-[400px] w-full text-white">
+        <section className="relative h-[95vh] min-h-[400px] w-full text-white">
+          {/* Mobile background */}
+          <Image
+            src="https://i.pinimg.com/736x/5d/17/4a/5d174a4702f1b343b4afc4db8e1f3ea6.jpg"
+            alt="Slipstreams mobile hero background"
+            fill
+            className="object-cover md:hidden"
+            priority
+            quality={70}
+          />
+
+          {/* Desktop / larger screens background */}
           {heroImage && (
             <Image
               src={heroImage.imageUrl}
               alt={heroImage.description}
               fill
-              className="object-cover"
+              className="hidden md:block object-cover"
               priority
               quality={70}
               data-ai-hint={heroImage.imageHint}
@@ -59,25 +73,32 @@ export default function Home() {
             </p>
             <Button asChild size="lg" className="mt-8">
               <Link prefetch href={`/grand-prix/${currentGrandPrix.slug}`}>
-                <Flag className="mr-2 h-5 w-5" />
+                {heroFlagCode && (
+                  <span className="mr-2 inline-flex items-center">
+                    <span className="relative h-5 w-7 overflow-hidden rounded-sm">
+                      <Image
+                        src={`https://flagcdn.com/48x36/${heroFlagCode}.png`}
+                        alt={`${currentGrandPrix.name} flag`}
+                        fill
+                        className="object-cover"
+                        sizes="28px"
+                      />
+                    </span>
+                  </span>
+                )}
                 {currentGrandPrix.name}
               </Link>
             </Button>
             <p className="mt-4 text-sm font-normal text-gray-400">
-              for quick updates and alterts ,<br/> join our Telegram or Discord channel
+              for quick updates and alterts ,<br/> join our  Discord channel
             </p>
           </div>
         </section>
 
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {/* Top banner ad (728x90) below Hero */}
-          <div className="my-8 flex justify-center">
-            <AdBanner
-              width={728}
-              height={90}
-              zoneKey="912074aa3de30a2f3cb2b3432d994606"
-              scriptSrc="//www.highperformanceformat.com/912074aa3de30a2f3cb2b3432d994606/invoke.js"
-            />
+          <div className="my-8">
+            <HomeTopBannerAd />
           </div>
 
           {/* Up Next Section */}
@@ -155,15 +176,8 @@ export default function Home() {
             </Card>
           </section>
 
-          {/* 300x250 ad above Disclaimer */}
-          <div className="mx-auto my-8 flex justify-center">
-            <AdBanner
-              width={300}
-              height={250}
-              zoneKey="9942bce170e25aead636127279479c68"
-              scriptSrc="//www.highperformanceformat.com/9942bce170e25aead636127279479c68/invoke.js"
-            />
-          </div>
+          {/* Ad after Introduction (effectivegatecpm) */}
+          <HomeAfterIntroAd />
 
           {/* Disclaimer and Policies */}
           <section className="">
@@ -184,7 +198,6 @@ export default function Home() {
 
         {/* Sticky bottom banner for mobile */}
         <div className="md:hidden">
-            <AdPlaceholder label="Sticky Bottom Banner (320x50)" className="fixed bottom-0 left-0 z-50 h-[50px] w-full" />
         </div>
       </main>
       <Footer />

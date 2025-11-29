@@ -1,27 +1,18 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import VideoPlayer from "./VideoPlayer";
 import AdModals, { AdModalHandles } from "./AdModals";
-import AdPlaceholder from "../shared/AdPlaceholder";
+import StreamingBannerAd from "./StreamingBannerAd";
 import { Button } from "../ui/button";
 import { Tv, Crown, ChevronLeft, ChevronRight } from "lucide-react";
-import dynamic from "next/dynamic";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../ui/select";
-import { useF1Stream } from "@/hooks/useF1Stream";
-import LiveTimingTower from "./LiveTimingTower";
-import LiveTrackMap from "./LiveTrackMap";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import RightSidePoll from "./RightSidePoll";
+import RightSideChat from "./RightSideChat";
+ 
 
-const DriverStandings = dynamic(() => import("./DriverStandings"), {
-  ssr: false,
-});
-
-const TrackInfoWidgets = dynamic(() => import("./TrackInfoWidgets"), {
-  ssr: false,
-});
+ 
 
 type GrandPrix = {
   name: string;
@@ -31,20 +22,12 @@ type GrandPrix = {
     mapImageUrl?: string;
   };
 };
-type Driver = {
-  position: number;
-  driver: string;
-  time: string;
-  points: number;
-};
 type StreamSource = { id: string; name: string };
 
 type StreamLayoutProps = {
   grandPrix: GrandPrix;
-  driverStandings: Driver[];
   streamSources: StreamSource[];
   streamingUrls: Record<string, string>;
-  trackMapImage?: ImagePlaceholder;
 };
 
 function BackupSelect({ sources, current, onChange }: { sources: StreamSource[]; current: StreamSource; onChange: (s: StreamSource) => void }) {
@@ -69,15 +52,13 @@ function BackupSelect({ sources, current, onChange }: { sources: StreamSource[];
 
 export default function StreamLayout({
   grandPrix,
-  driverStandings,
   streamSources,
   streamingUrls,
-  trackMapImage
 }: StreamLayoutProps) {
   const [isTheatreMode, setIsTheatreMode] = useState(false);
-  const [isHdUnlocked, setIsHdUnlocked] = useState(false);
   // Start with a synthetic "Default" selection so no language button is red until clicked
   const defaultSource: StreamSource = { id: "default", name: "Default" };
+  const hdSource: StreamSource = { id: "unlockHD", name: "HD" };
   const [currentSource, setCurrentSource] = useState<StreamSource>(defaultSource);
   const [isStreamLoading, setIsStreamLoading] = useState(false);
   const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -105,13 +86,7 @@ export default function StreamLayout({
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  // Resolve OpenF1 session params (free polling -> near-live)
-  const countryBySlug: Record<string, string> = {
-    "qatar": "Qatar",
-    "abu-dhabi": "United Arab Emirates",
-  };
-  const country = countryBySlug[grandPrix.slug] ?? grandPrix.slug;
-  const f1 = useF1Stream({ country, year: "latest", session: "Race" });
+  
 
   // Simple timer for TV mode overlay
   useEffect(() => {
@@ -132,7 +107,7 @@ export default function StreamLayout({
 
   const toggleTvMode = () => {
     if (isTheatreMode) {
-      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      (document as any).exitFullscreen?.().catch?.(() => {});
       setIsTheatreMode(false);
     } else {
       const el = containerRef.current ?? document.documentElement;
@@ -142,24 +117,22 @@ export default function StreamLayout({
     }
   };
 
-  const handleUnlockHD = () => {
-    adModalRef.current?.showCpvAd(() => {
-        setIsHdUnlocked(true);
-    });
-  };
+const handleUnlockHD = () => {
+  if (typeof window !== "undefined") {
+    const encoded =
+      "aHR0cHM6Ly93d3cuZWZmZWN0aXZlZ2F0ZWNwbS5jb20vc2Zjdm1hczF4P2tleT0yMTk2MzRiNDJjYTYzYTAzYTlhZWQ4YzEyMjM3OGM0ZQ==";
 
-  const handleUnlockStats = () => {
-     adModalRef.current?.showRewardedAd(() => {
-        // In a real app, this would unlock the stats panel
-        console.log("Stats unlocked!");
-     });
+    const adUrl = window.atob(encoded);
+
+    window.open(adUrl, "_blank", "noopener,noreferrer");
   }
 
+  setCurrentSource(hdSource);
+};
+
+
   const currentUrl = (() => {
-    if (isHdUnlocked && streamingUrls["unlockHD"]) {
-      return streamingUrls["unlockHD"];
-    }
-    const key = currentSource.id === "default" ? "default" : currentSource.id;
+    const key = currentSource.id;
     return streamingUrls[key] ?? streamingUrls["default"];
   })();
 
@@ -208,7 +181,9 @@ export default function StreamLayout({
         )}>
             {/* Left Panel: Driver Standings */}
             <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}>
-                <LiveTimingTower tower={f1.tower} connected={f1.connected} />
+                <div className="w-full max-w-full overflow-hidden">
+                  <RightSidePoll />
+                </div>
             </div>
 
             {/* Center: Video Player */}
@@ -216,17 +191,25 @@ export default function StreamLayout({
                 <div className="relative">
                   <VideoPlayer 
                       url={currentUrl} 
-                      isHd={isHdUnlocked}
+                      isHd={currentSource.id === "unlockHD"}
                       showLoading={isStreamLoading}
                       onLoaded={handleStreamLoaded}
                       onFirstFullscreenClick={() => adModalRef.current?.showOnClickAd()}
                       curved={false}
                   />
+                  {/* Subtle dark overlay on non-HD streams in normal mode */}
+                  {!isTheatreMode && currentSource.id !== "unlockHD" && (
+                    <div className="pointer-events-none absolute inset-0 bg-black/20" />
+                  )}
                   {isTheatreMode && (
-                    <div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-30 rounded-md bg-black/60 px-3 py-1 text-white font-mono text-xl font-bold">
-                      {String(Math.floor(elapsed/3600)).padStart(2,'0')}
-                      :{String(Math.floor((elapsed%3600)/60)).padStart(2,'0')}
-                      :{String(elapsed%60).padStart(2,'0')}
+                    <div className="absolute inset-0 flex items-end justify-end pb-4 pr-4 z-30">
+                      <button
+                        type="button"
+                        onClick={toggleTvMode}
+                        className="rounded-md bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:bg-black/80"
+                      >
+                        Exit TV Mode
+                      </button>
                     </div>
                   )}
                 </div>
@@ -250,7 +233,7 @@ export default function StreamLayout({
                                         </Button>
 
                                         {/* Unlock HD second on mobile */}
-                                        {!isHdUnlocked && (
+                                        {currentSource.id !== "unlockHD" && (
                                         <Button onClick={handleUnlockHD} size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-black shrink-0 lg:hidden">
                                             <Crown className="mr-2 h-4 w-4" />
                                             Unlock HD
@@ -305,7 +288,7 @@ export default function StreamLayout({
                                     <Tv className="mr-2 h-4 w-4" />
                                     {isTheatreMode ? "Exit TV Mode" : "TV Mode"}
                                 </Button>
-                                {!isHdUnlocked && (
+                                {currentSource.id !== "unlockHD" && (
                                     <Button onClick={handleUnlockHD} size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-black">
                                         <Crown className="mr-2 h-4 w-4" />
                                         Unlock HD
@@ -344,7 +327,7 @@ export default function StreamLayout({
                         current={currentSource}
                         onChange={setCurrentSource}
                       />
-                      {!isHdUnlocked && (
+                      {currentSource.id !== "unlockHD" && (
                         <Button onClick={handleUnlockHD} size="sm" className="ml-2 bg-yellow-500 hover:bg-yellow-600 text-black">
                           <Crown className="mr-2 h-4 w-4" /> Unlock HD
                         </Button>
@@ -356,48 +339,30 @@ export default function StreamLayout({
                 {/* Sticky banner under video - hidden in TV mode */}
                 {!isTheatreMode && (
                   <div className="px-4 lg:px-0">
-                      <AdPlaceholder label="Sticky Banner Under Video (728x90)" className="h-[90px] w-full" />
+                      <StreamingBannerAd />
                   </div>
                 )}
             </div>
 
             {/* Right Panel: Widgets (desktop) - show map only, hide HUD */}
             <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}> 
-                <TrackInfoWidgets
-                  lapCount={grandPrix.circuit.lapCount}
-                  trackMapImage={trackMapImage}
-                  showHud={false}
-                  currentLap={f1.currentLap}
-                  useLiveMap
-                  livePoints={f1.trackPoints.points}
-                  liveTrails={f1.trackPoints.trails}
-                  liveBackgroundUrl={undefined}
-                  liveBackgroundAlt={`${grandPrix.name} live map`}
-                />
                 {/* LiveTrackMap duplicated card removed; TrackInfoWidgets shows live map */}
+                <div className="w-full max-w-full overflow-hidden">
+                  <RightSideChat />
+                </div>
             </div>
 
             {/* Mobile-only Panels */}
             {!isTheatreMode && (
             <div className="lg:hidden px-4">
-                <LiveTimingTower tower={f1.tower} connected={f1.connected} />
-                <div className="my-4">
-                    <TrackInfoWidgets
-                      lapCount={grandPrix.circuit.lapCount}
-                      trackMapImage={trackMapImage}
-                      showHud
-                      currentLap={f1.currentLap}
-                      useLiveMap
-                      livePoints={f1.trackPoints.points}
-                      liveTrails={f1.trackPoints.trails}
-                      liveBackgroundUrl={undefined}
-                      liveBackgroundAlt={`${grandPrix.name} live map`}
-                    />
-                </div>
+          
                 {/* LiveTrackMap duplicated card removed on mobile; TrackInfoWidgets shows live map */}
-                <div className="my-4">
-                     <AdPlaceholder label="Rewarded Ad Pop-up Trigger" className="h-[100px] w-full" />
-                     <Button onClick={handleUnlockStats} className="w-full mt-2">Unlock Stats</Button>
+             
+                <div className="w-full max-w-full overflow-hidden mt-4">
+                  <RightSidePoll />
+                </div>
+                <div className="w-full max-w-full overflow-hidden mt-4">
+                  <RightSideChat />
                 </div>
             </div>
             )}

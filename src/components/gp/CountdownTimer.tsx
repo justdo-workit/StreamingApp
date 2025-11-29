@@ -11,12 +11,26 @@ const calculateTimeLeft = (targetDate: string) => {
   let timeLeft = {};
 
   if (difference > 0) {
-    timeLeft = {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / 1000 / 60) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((difference / 1000 / 60) % 60);
+    const seconds = Math.floor((difference / 1000) % 60);
+
+    // Borrow 1 day when hours roll to 0 so display shows 23 hours from the previous day bucket
+    const adj = (d: number, h: number) => {
+      if (d > 0 && h === 0) {
+        return { days: d - 1, hours: 23 };
+      }
+      return { days: d, hours: h };
     };
+    const { days: dAdj, hours: hAdj } = adj(days, hours);
+
+    timeLeft = {
+      days: dAdj,
+      hours: hAdj,
+      minutes,
+      seconds,
+    } as any;
   }
 
   return timeLeft;

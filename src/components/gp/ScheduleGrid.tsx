@@ -53,7 +53,7 @@ export default function ScheduleGrid({ schedule, grandPrixSlug }: ScheduleGridPr
                   <div className="text-base font-semibold text-white">{s.name}</div>
                   <div className="text-sm text-white/60">{formatRange(s.time, s.name)}</div>
                   <div className="mt-3 max-w-xs">
-                    <SessionStatusButton sessionTime={s.time} grandPrixSlug={grandPrixSlug} />
+                    <SessionStatusButton sessionTime={s.time} sessionName={s.name} grandPrixSlug={grandPrixSlug} />
                   </div>
                 </div>
               ))}

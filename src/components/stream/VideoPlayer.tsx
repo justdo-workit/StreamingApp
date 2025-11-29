@@ -156,7 +156,6 @@ export default function VideoPlayer({ url, isHd, onFirstFullscreenClick, curved 
             src={url}
             onLoad={() => { if (onLoaded) onLoaded(); }}
             allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-            allowFullScreen
             className="h-full w-full border-0"
             title="F1 Stream"
           />

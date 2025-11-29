@@ -24,8 +24,7 @@ export default function Footer() {
               rel="noreferrer"
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
             >
-              <Send className="h-4 w-4" />
-              <span>Telegram</span>
+            
             </a>
           </div>
         </div>

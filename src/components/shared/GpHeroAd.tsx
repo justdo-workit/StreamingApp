@@ -2,14 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-interface AdBannerProps {
-  width: number;
-  height: number;
-  zoneKey: string;
-  scriptSrc: string;
-}
-
-export default function AdBanner({ width, height, zoneKey, scriptSrc }: AdBannerProps) {
+export default function GpHeroAd() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -19,25 +12,24 @@ export default function AdBanner({ width, height, zoneKey, scriptSrc }: AdBanner
     container.innerHTML = '';
 
     (window as any).atOptions = {
-      key: zoneKey,
+      key: '3ff3fb1f818fe806eddec9e76ce0c4d6',
       format: 'iframe',
-      height,
-      width,
+      height: 60,
+      width: 468,
       params: {},
     };
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = scriptSrc;
+    script.src = '//www.highperformanceformat.com/3ff3fb1f818fe806eddec9e76ce0c4d6/invoke.js';
     script.async = true;
 
     container.appendChild(script);
-  }, [width, height]);
+  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      style={{ width, height }}
-    />
+    <div className="w-full flex justify-center my-8">
+      <div ref={containerRef} style={{ width: 468, height: 60 }} />
+    </div>
   );
 }
