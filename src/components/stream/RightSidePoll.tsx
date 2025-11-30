@@ -9,7 +9,7 @@ export default function RightSidePoll() {
     const container = containerRef.current;
     if (!container) return;
 
-    container.innerHTML = "<a href='https://poll-maker.com/poll5659981xe0b44D9F-166' data-poll='5659981xe0b44D9F-166' style='width:100%; display:block; text-align:right;'>.</a>";
+    container.innerHTML = "<a href='https://poll-maker.com/poll5660589xdb3e4E18-166' data-poll='5660597x585e9819-166' style='width:100%; display:block; text-align:right;'>Poll Maker</a>";
 
     const inline = document.createElement('script');
     inline.type = 'text/javascript';
