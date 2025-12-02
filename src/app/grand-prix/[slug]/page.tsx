@@ -67,7 +67,7 @@ export default async function GrandPrixPage({ params }: GrandPrixPageProps) {
             <GpHeroAd />
 
             {/* Schedule Grid */}
-            <ScheduleGrid schedule={gp.schedule} grandPrixSlug={gp.slug} />
+            <ScheduleGrid schedule={gp.schedule} grandPrixSlug={gp.slug} grandPrixName={gp.name} />
             {/* Race Facts */}
             <RaceFacts circuit={gp.circuit} />
         </div>
