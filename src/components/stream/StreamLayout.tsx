@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import VideoPlayer from "./VideoPlayer";
 import AdModals, { AdModalHandles } from "./AdModals";
@@ -21,6 +22,11 @@ type GrandPrix = {
     lapCount: number;
     mapImageUrl?: string;
   };
+  schedule: {
+    id: number;
+    name: string;
+    time: string;
+  }[];
 };
 type StreamSource = { id: string; name: string };
 
@@ -28,6 +34,8 @@ type StreamLayoutProps = {
   grandPrix: GrandPrix;
   streamSources: StreamSource[];
   streamingUrls: Record<string, string>;
+  raceStart?: string; // kept for compatibility but not used for the modal anymore
+  sessionName?: string;
 };
 
 function BackupSelect({ sources, current, onChange }: { sources: StreamSource[]; current: StreamSource; onChange: (s: StreamSource) => void }) {
@@ -54,6 +62,8 @@ export default function StreamLayout({
   grandPrix,
   streamSources,
   streamingUrls,
+  raceStart,
+  sessionName,
 }: StreamLayoutProps) {
   const [isTheatreMode, setIsTheatreMode] = useState(false);
   // Start with a synthetic "Default" selection so no language button is red until clicked
@@ -67,6 +77,8 @@ export default function StreamLayout({
   const [isScrollable, setIsScrollable] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [nextSessionRemainingMs, setNextSessionRemainingMs] = useState<number | null>(null);
+  const [nextSessionName, setNextSessionName] = useState<string | null>(null);
   const scrollByAmount = (dir: 'left' | 'right') => {
     const el = scrollRef.current;
     if (!el) return;
@@ -86,14 +98,57 @@ export default function StreamLayout({
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  
-
   // Simple timer for TV mode overlay
   useEffect(() => {
     if (!isTheatreMode) return;
     const t = setInterval(() => setElapsed((s) => s + 1), 1000);
     return () => clearInterval(t);
   }, [isTheatreMode]);
+
+  // Dynamic countdown to the target session.
+  // If a specific sessionName is provided, use that session.
+  // Otherwise, fall back to the next upcoming session (FP1, FP2, FP3, Quali, Race).
+  useEffect(() => {
+    if (!grandPrix?.schedule?.length) {
+      setNextSessionRemainingMs(null);
+      setNextSessionName(null);
+      return;
+    }
+
+    const update = () => {
+      const now = Date.now();
+      const withStart = grandPrix.schedule.map((s) => ({
+        ...s,
+        start: new Date(s.time).getTime(),
+      }));
+
+      let target = null as (typeof withStart)[number] | null;
+
+      if (sessionName) {
+        const lower = sessionName.toLowerCase();
+        target = withStart.find((s) => s.name.toLowerCase() === lower) || null;
+      }
+
+      if (!target) {
+        // Fallback: next upcoming session
+        const upcoming = withStart.filter((s) => s.start > now);
+        if (upcoming.length === 0) {
+          setNextSessionRemainingMs(null);
+          setNextSessionName(null);
+          return;
+        }
+        target = upcoming.sort((a, b) => a.start - b.start)[0];
+      }
+
+      const diff = target.start - now;
+      setNextSessionRemainingMs(diff);
+      setNextSessionName(target.name);
+    };
+
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
+  }, [grandPrix, sessionName]);
 
   // Sync TV mode with browser fullscreen state (ESC should exit TV mode)
   useEffect(() => {
@@ -117,19 +172,18 @@ export default function StreamLayout({
     }
   };
 
-const handleUnlockHD = () => {
-  if (typeof window !== "undefined") {
-    const encoded =
-      "aHR0cHM6Ly93d3cuZWZmZWN0aXZlZ2F0ZWNwbS5jb20vc2Zjdm1hczF4P2tleT0yMTk2MzRiNDJjYTYzYTAzYTlhZWQ4YzEyMjM3OGM0ZQ==";
+  const handleUnlockHD = () => {
+    if (typeof window !== "undefined") {
+      const encoded =
+        "aHR0cHM6Ly93d3cuZWZmZWN0aXZlZ2F0ZWNwbS5jb20vc2Zjdm1hczF4P2tleT0yMTk2MzRiNDJjYTYzYTAzYTlhZWQ4YzEyMjM3OGM0ZQ==";
 
-    const adUrl = window.atob(encoded);
+      const adUrl = window.atob(encoded);
 
-    window.open(adUrl, "_blank", "noopener,noreferrer");
-  }
+      window.open(adUrl, "_blank", "noopener,noreferrer");
+    }
 
-  setCurrentSource(hdSource);
-};
-
+    setCurrentSource(hdSource);
+  };
 
   const currentUrl = (() => {
     const key = currentSource.id;
@@ -172,202 +226,300 @@ const handleUnlockHD = () => {
           : "container mx-auto max-w-none px-0 py-4 lg:px-4"
       )}
     >
-        <AdModals ref={adModalRef} />
-        <div className={cn(
-            "grid w-full gap-4 transition-all duration-300",
-            isTheatreMode 
-            ? "grid-cols-1" 
+      <AdModals ref={adModalRef} />
+      <div
+        className={cn(
+          "grid w-full gap-4 transition-all duration-300",
+          isTheatreMode
+            ? "grid-cols-1"
             : "grid-cols-1 lg:grid-cols-[280px_1fr_320px]"
-        )}>
-            {/* Left Panel: Driver Standings */}
-            <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}>
-                <div className="w-full max-w-full overflow-hidden">
-                  <RightSidePoll />
-                </div>
-            </div>
+        )}
+      >
+        {/* Left Panel: Driver Standings */}
+        <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}>
+          <div className="w-full max-w-full overflow-hidden">
+            <RightSidePoll />
+          </div>
+        </div>
 
-            {/* Center: Video Player */}
-            <div className="flex flex-col gap-4">
-                <div className="relative">
-                  <VideoPlayer 
-                      url={currentUrl} 
-                      isHd={currentSource.id === "unlockHD"}
-                      showLoading={isStreamLoading}
-                      onLoaded={handleStreamLoaded}
-                      onFirstFullscreenClick={() => adModalRef.current?.showOnClickAd()}
-                      curved={false}
-                  />
-                  {/* Subtle dark overlay on non-HD streams in normal mode */}
-                  {!isTheatreMode && currentSource.id !== "unlockHD" && (
-                    <div className="pointer-events-none absolute inset-0 bg-black/20" />
-                  )}
-                  {isTheatreMode && (
-                    <div className="absolute inset-0 flex items-end justify-end pb-4 pr-4 z-30">
-                      <button
-                        type="button"
-                        onClick={toggleTvMode}
-                        className="rounded-md bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:bg-black/80"
-                      >
-                        Exit TV Mode
-                      </button>
-                    </div>
-                  )}
-                </div>
+        {/* Center: Video Player */}
+        <div className="flex flex-col gap-4">
+          <div className="relative">
+            <VideoPlayer
+              url={currentUrl}
+              isHd={currentSource.id === "unlockHD"}
+              showLoading={isStreamLoading}
+              onLoaded={handleStreamLoaded}
+              onFirstFullscreenClick={() => adModalRef.current?.showOnClickAd()}
+              curved={false}
+            />
+            {/* Subtle dark overlay on non-HD streams in normal mode */}
+            {!isTheatreMode && currentSource.id !== "unlockHD" && (
+              <div className="pointer-events-none absolute inset-0 bg-black/20" />
+            )}
+            {isTheatreMode && (
+              <div className="absolute inset-0 flex items-end justify-end pb-4 pr-4 z-30">
+                <button
+                  type="button"
+                  onClick={toggleTvMode}
+                  className="rounded-md bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:bg-black/80"
+                >
+                  Exit TV Mode
+                </button>
+              </div>
+            )}
+          </div>
 
-                {!isTheatreMode && (
-                <div className="px-4 lg:px-0">
-                    <div className="rounded-lg border bg-card p-2">
-                        <div className="flex items-center justify-between gap-2">
-                            {/* Scrollable controls; arrows moved below on mobile */}
-                            <div className="flex-1 min-w-0">
-                                <div ref={scrollRef} className="w-full overflow-x-auto whitespace-nowrap snap-x snap-mandatory touch-pan-x scroll-smooth [-ms-overflow-style:none]" style={{ scrollbarWidth: 'none' }}>
-                                    <div className="inline-flex items-center gap-2 px-4 py-1">
-                                        {/* Default first (selected by default) */}
-                                        <Button
-                                            variant={currentSource.id === defaultSource.id ? 'destructive' : 'secondary'}
-                                            size="sm"
-                                            className="shrink-0"
-                                            onClick={() => setCurrentSource(defaultSource)}
-                                        >
-                                            Default
-                                        </Button>
-
-                                        {/* Unlock HD second on mobile */}
-                                        {currentSource.id !== "unlockHD" && (
-                                        <Button onClick={handleUnlockHD} size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-black shrink-0 lg:hidden">
-                                            <Crown className="mr-2 h-4 w-4" />
-                                            Unlock HD
-                                        </Button>
-                                        )}
-
-                                        {/* Language sources (non-backup) - normal until selected */}
-                                        {streamSources
-                                            .filter(s => !s.id.startsWith('bk'))
-                                            .map(source => (
-                                            <Button
-                                                key={source.id}
-                                                variant={currentSource.id === source.id ? 'destructive' : 'secondary'}
-                                                size="sm"
-                                                className="shrink-0"
-                                                onClick={() => setCurrentSource(source)}
-                                            >
-                                                {source.name}
-                                            </Button>
-                                        ))}
-
-                                        {/* More (backup) dropdown */}
-                                        <BackupSelect
-                                            sources={streamSources.filter(s => s.id.startsWith('bk'))}
-                                            current={currentSource}
-                                            onChange={setCurrentSource}
-                                        />
-                                    </div>
-                                </div>
-                                {/* Mobile-only arrows below if needed */}
-                                {isScrollable && (
-                                  <>
-                                    <div className="mt-2 flex items-center justify-between lg:hidden px-1">
-                                      <Button variant="secondary" size="icon" className="h-7 w-7" onClick={() => scrollByAmount('left')}>
-                                        <ChevronLeft className="h-4 w-4" />
-                                      </Button>
-                                      <Button variant="secondary" size="icon" className="h-7 w-7" onClick={() => scrollByAmount('right')}>
-                                        <ChevronRight className="h-4 w-4" />
-                                      </Button>
-                                    </div>
-                                    <div className="mt-1 lg:hidden text-[11px] text-muted-foreground flex items-center justify-center gap-2">
-                                      <span className="inline-block h-2 w-2 rounded-full bg-primary" />
-                                      <span>← Swipe to view more →</span>
-                                    </div>
-                                  </>
-                                )}
-                            </div>
-
-                            {/* Right-side controls on large screens */}
-                            <div className="hidden lg:flex items-center gap-2">
-                                <Button variant="outline" size="sm" onClick={toggleTvMode}>
-                                    <Tv className="mr-2 h-4 w-4" />
-                                    {isTheatreMode ? "Exit TV Mode" : "TV Mode"}
-                                </Button>
-                                {currentSource.id !== "unlockHD" && (
-                                    <Button onClick={handleUnlockHD} size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-black">
-                                        <Crown className="mr-2 h-4 w-4" />
-                                        Unlock HD
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                )}
-
-                {isTheatreMode && (
-                  <div className="fixed inset-x-0 bottom-6 z-40 flex justify-center">
-                    <div className="pointer-events-auto flex items-center gap-2 rounded-2xl border bg-black/70 px-3 py-2 shadow-lg backdrop-blur" role="group" aria-label="TV controls">
-                      <Button
-                        variant={currentSource.id === defaultSource.id ? 'destructive' : 'secondary'}
-                        size="sm"
-                        className="shrink-0"
-                        onClick={() => setCurrentSource(defaultSource)}
-                      >
-                        Default
-                      </Button>
-                      {streamSources.filter(s => !s.id.startsWith('bk')).map(source => (
+          {!isTheatreMode && (
+            <div className="px-4 lg:px-0">
+              <div className="rounded-lg border bg-card p-2">
+                <div className="flex items-center justify-between gap-2">
+                  {/* Scrollable controls; arrows moved below on mobile */}
+                  <div className="flex-1 min-w-0">
+                    <div
+                      ref={scrollRef}
+                      className="w-full overflow-x-auto whitespace-nowrap snap-x snap-mandatory touch-pan-x scroll-smooth [-ms-overflow-style:none]"
+                      style={{ scrollbarWidth: "none" }}
+                    >
+                      <div className="inline-flex items-center gap-2 px-4 py-1">
+                        {/* Default first (selected by default) */}
                         <Button
-                          key={source.id}
-                          variant={currentSource.id === source.id ? 'destructive' : 'secondary'}
+                          variant={
+                            currentSource.id === defaultSource.id
+                              ? "destructive"
+                              : "secondary"
+                          }
                           size="sm"
                           className="shrink-0"
-                          onClick={() => setCurrentSource(source)}
+                          onClick={() => setCurrentSource(defaultSource)}
                         >
-                          {source.name}
+                          Default
                         </Button>
-                      ))}
-                      <BackupSelect
-                        sources={streamSources.filter(s => s.id.startsWith('bk'))}
-                        current={currentSource}
-                        onChange={setCurrentSource}
-                      />
-                      {currentSource.id !== "unlockHD" && (
-                        <Button onClick={handleUnlockHD} size="sm" className="ml-2 bg-yellow-500 hover:bg-yellow-600 text-black">
-                          <Crown className="mr-2 h-4 w-4" /> Unlock HD
-                        </Button>
-                      )}
+
+                        {/* Unlock HD second on mobile */}
+                        {currentSource.id !== "unlockHD" && (
+                          <Button
+                            onClick={handleUnlockHD}
+                            size="sm"
+                            className="bg-yellow-500 hover:bg-yellow-600 text-black shrink-0 lg:hidden"
+                          >
+                            <Crown className="mr-2 h-4 w-4" />
+                            Unlock HD
+                          </Button>
+                        )}
+
+                        {/* Language sources (non-backup) - normal until selected */}
+                        {streamSources
+                          .filter((s) => !s.id.startsWith("bk"))
+                          .map((source) => (
+                            <Button
+                              key={source.id}
+                              variant={
+                                currentSource.id === source.id
+                                  ? "destructive"
+                                  : "secondary"
+                              }
+                              size="sm"
+                              className="shrink-0"
+                              onClick={() => setCurrentSource(source)}
+                            >
+                              {source.name}
+                            </Button>
+                          ))}
+
+                        {/* More (backup) dropdown */}
+                        <BackupSelect
+                          sources={streamSources.filter((s) => s.id.startsWith("bk"))}
+                          current={currentSource}
+                          onChange={setCurrentSource}
+                        />
+                      </div>
                     </div>
+                    {/* Mobile-only arrows below if needed */}
+                    {isScrollable && (
+                      <>
+                        <div className="mt-2 flex items-center justify-between lg:hidden px-1">
+                          <Button
+                            variant="secondary"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => scrollByAmount("left")}
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => scrollByAmount("right")}
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="mt-1 lg:hidden text-[11px] text-muted-foreground flex items-center justify-center gap-2">
+                          <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+                          <span>← Swipe to view more →</span>
+                        </div>
+                      </>
+                    )}
                   </div>
-                )}
 
-                {/* Sticky banner under video - hidden in TV mode */}
-                {!isTheatreMode && (
-                  <div className="px-4 lg:px-0">
-                      <StreamingBannerAd />
+                  {/* Right-side controls on large screens */}
+                  <div className="hidden lg:flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={toggleTvMode}>
+                      <Tv className="mr-2 h-4 w-4" />
+                      {isTheatreMode ? "Exit TV Mode" : "TV Mode"}
+                    </Button>
+                    {currentSource.id !== "unlockHD" && (
+                      <Button
+                        onClick={handleUnlockHD}
+                        size="sm"
+                        className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                      >
+                        <Crown className="mr-2 h-4 w-4" />
+                        Unlock HD
+                      </Button>
+                    )}
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isTheatreMode && (
+            <div className="fixed inset-x-0 bottom-6 z-40 flex justify-center">
+              <div
+                className="pointer-events-auto flex items-center gap-2 rounded-2xl border bg-black/70 px-3 py-2 shadow-lg backdrop-blur"
+                role="group"
+                aria-label="TV controls"
+              >
+                <Button
+                  variant={
+                    currentSource.id === defaultSource.id
+                      ? "destructive"
+                      : "secondary"
+                  }
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => setCurrentSource(defaultSource)}
+                >
+                  Default
+                </Button>
+                {streamSources
+                  .filter((s) => !s.id.startsWith("bk"))
+                  .map((source) => (
+                    <Button
+                      key={source.id}
+                      variant={
+                        currentSource.id === source.id
+                          ? "destructive"
+                          : "secondary"
+                      }
+                      size="sm"
+                      className="shrink-0"
+                      onClick={() => setCurrentSource(source)}
+                    >
+                      {source.name}
+                    </Button>
+                  ))}
+                <BackupSelect
+                  sources={streamSources.filter((s) => s.id.startsWith("bk"))}
+                  current={currentSource}
+                  onChange={setCurrentSource}
+                />
+                {currentSource.id !== "unlockHD" && (
+                  <Button
+                    onClick={handleUnlockHD}
+                    size="sm"
+                    className="ml-2 bg-yellow-500 hover:bg-yellow-600 text-black"
+                  >
+                    <Crown className="mr-2 h-4 w-4" /> Unlock HD
+                  </Button>
                 )}
+              </div>
             </div>
+          )}
 
-            {/* Right Panel: Widgets (desktop) - show map only, hide HUD */}
-            <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}> 
-                {/* LiveTrackMap duplicated card removed; TrackInfoWidgets shows live map */}
-                <div className="w-full max-w-full overflow-hidden">
-                  <RightSideChat />
-                </div>
+          {/* Sticky banner under video - hidden in TV mode */}
+          {!isTheatreMode && (
+            <div className="px-4 lg:px-0">
+              <StreamingBannerAd />
             </div>
-
-            {/* Mobile-only Panels */}
-            {!isTheatreMode && (
-            <div className="lg:hidden px-4">
-          
-                {/* LiveTrackMap duplicated card removed on mobile; TrackInfoWidgets shows live map */}
-             
-                <div className="w-full max-w-full overflow-hidden mt-4">
-                  <RightSidePoll />
-                </div>
-                <div className="w-full max-w-full overflow-hidden mt-4">
-                  <RightSideChat />
-                </div>
-            </div>
-            )}
-
+          )}
         </div>
+
+        {/* Right Panel: Widgets (desktop) - chat */}
+        <div className={cn("hidden lg:block", isTheatreMode && "!hidden")}>
+          <div className="w-full max-w-full overflow-hidden">
+            <RightSideChat />
+          </div>
+        </div>
+
+        {/* Mobile-only Panels */}
+        {!isTheatreMode && (
+          <div className="lg:hidden px-4">
+            <div className="w-full max-w-full overflow-hidden mt-4">
+              <RightSidePoll />
+            </div>
+            <div className="w-full max-w-full overflow-hidden mt-4">
+              <RightSideChat />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Full-screen glassy countdown modal for the next session.
+          Visible from now until 30 minutes before the session starts. */}
+      {nextSessionRemainingMs !== null &&
+        nextSessionRemainingMs > 30 * 60 * 1000 && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
+            <div className="flex flex-col items-center gap-8 text-white px-4 text-center">
+              <div className="text-xs md:text-sm uppercase tracking-[0.25em] text-white/70">
+                {grandPrix.name} {nextSessionName ?? "Session"} starts in
+              </div>
+              {(() => {
+                const totalSeconds = Math.floor(nextSessionRemainingMs / 1000);
+                const days = Math.floor(totalSeconds / (24 * 3600));
+                const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                const pad = (n: number) => String(n).padStart(2, "0");
+                const units = [
+                  { label: "Days", value: days },
+                  { label: "Hours", value: hours },
+                  { label: "Minutes", value: minutes },
+                  { label: "Seconds", value: seconds },
+                ];
+                return (
+                  <div className="flex gap-3 md:gap-6">
+                    {units.map((u) => (
+                      <div
+                        key={u.label}
+                        className="flex h-16 w-16 flex-col items-center justify-center rounded-xl bg-white/10 backdrop-blur-lg md:h-24 md:w-24 shadow-lg border border-white/20"
+                      >
+                        <span className="text-2xl font-bold md:text-4xl">
+                          {pad(u.value)}
+                        </span>
+                        <span className="mt-1 text-[10px] md:text-xs uppercase tracking-wide text-white/70">
+                          {u.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+              <Button
+                asChild
+                size="sm"
+                className="mt-2 bg-white text-black hover:bg-white/90"
+              >
+                <Link href={`/grand-prix/${grandPrix.slug}`}>
+                  Back to Grand Prix page
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
     </div>
   );
 }

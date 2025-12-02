@@ -10,7 +10,8 @@ import Footer from '@/components/layout/Footer';
 import { grandPrixes, placeholderImages } from '@/lib/data';
 
 export default function Home() {
-  const currentGrandPrix = grandPrixes[0];
+  const currentGrandPrix =
+    grandPrixes.find((gp) => gp.slug === 'abu-dhabi') ?? grandPrixes[0];
   const upcomingGPs = grandPrixes;
   const heroImage = placeholderImages.find((img) => img.id === 'home-hero');
 
@@ -86,11 +87,11 @@ export default function Home() {
                     </span>
                   </span>
                 )}
-                {currentGrandPrix.name}
+                Abu Dhabi GP
               </Link>
             </Button>
             <p className="mt-4 text-sm font-normal text-gray-400">
-              for quick updates and alterts ,<br/> join our  Discord channel
+              for quick updates and alerts, join our Discord channel
             </p>
           </div>
         </section>
@@ -122,6 +123,11 @@ export default function Home() {
                         />
                         <div className="absolute inset-0 bg-black/50" />
                       </>
+                    )}
+                    {gp.slug === 'qatar' && (
+                      <div className="absolute left-3 top-3 z-20 rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold text-white">
+                        Completed
+                      </div>
                     )}
                     {(() => {
                       const code = getCountryCode(gp.name);

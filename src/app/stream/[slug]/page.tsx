@@ -12,19 +12,25 @@ type StreamPageProps = {
   params: Promise<{
     slug: string;
   }>;
+  searchParams?: {
+    session?: string;
+  };
 };
 
 export function generateStaticParams() {
   return grandPrixes.map((g) => ({ slug: g.slug }));
 }
 
-export default async function StreamPage({ params }: StreamPageProps) {
+export default async function StreamPage({ params, searchParams }: StreamPageProps) {
   const { slug } = await params;
   const gp = grandPrixes.find((g) => g.slug === slug);
 
   if (!gp) {
     notFound();
   }
+
+  const raceSession = gp.schedule.find((s) => s.name === "Race");
+  const selectedSessionName = searchParams?.session;
 
   const getCountryCode = (name: string) => {
     const n = name.toLowerCase();
@@ -52,7 +58,7 @@ export default async function StreamPage({ params }: StreamPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-       <Header
+      <Header
         grandPrixName={gp.name}
         showBack
         a_href={`/grand-prix/${gp.slug}`}
@@ -64,6 +70,8 @@ export default async function StreamPage({ params }: StreamPageProps) {
           grandPrix={gp}
           streamSources={streamSources}
           streamingUrls={streamingUrls}
+          raceStart={raceSession?.time}
+          sessionName={selectedSessionName}
         />
       </main>
       <Footer />
