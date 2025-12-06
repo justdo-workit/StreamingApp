@@ -158,7 +158,7 @@ export const streamSources = [
 
 export const streamingUrls: Record<string, string> = {
 	
-  default: "https://ihatestreams.xyz/embed/1a0edc01-8363-11f0-b385-bc2411b21e0d",
+  default: "https://ihatestreams.xyz/embed/f2c69cd3-8715-11f0-b385-bc2411b21e0d",
   unlockHD: "https://ihatestreams.xyz/embed/1a0edc01-8363-11f0-b385-bc2411b21e0d",
 	de: "https://ihatestreams.xyz/embed/e3ed1ecf-3cdb-11f0-afb1-ecf4bbdafde4",
 	it: "https://ihatestreams.xyz/embed/f2c69cd3-8715-11f0-b385-bc2411b21e0d",
