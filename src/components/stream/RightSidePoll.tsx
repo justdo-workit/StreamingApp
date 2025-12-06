@@ -11,7 +11,7 @@ export default function RightSidePoll() {
 
     // Poll anchor that PollMaker will enhance
     container.innerHTML =
-      "<a href='https://www.poll-maker.com' data-poll='5666696x5f684cd8-166' style='width:100%; display:block; text-align:right;'>.</a>";
+      "<a href='https://www.poll-maker.com' data-poll='5666696x5f684cd8-166' style='width:100%; display:block; text-align:right;'>Who will take Pole Position.</a>";
 
     const inline = document.createElement('script');
     inline.type = 'text/javascript';
