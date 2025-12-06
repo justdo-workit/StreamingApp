@@ -7,7 +7,9 @@ import HomeTopBannerAd from '@/components/shared/HomeTopBannerAd';
 import HomeAfterIntroAd from '@/components/shared/HomeAfterIntroAd';
 import AdPlaceholder from '@/components/shared/AdPlaceholder';
 import Footer from '@/components/layout/Footer';
+import GpBottomAd from '@/components/shared/GpBottomAd';
 import { grandPrixes, placeholderImages } from '@/lib/data';
+import HomeBoxAd from '@/components/shared/HomeBoxAd';
 
 export default function Home() {
   const currentGrandPrix =
@@ -99,9 +101,11 @@ export default function Home() {
 
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {/* Top banner ad (728x90) below Hero */}
+
+          <HomeBoxAd/>
           <div className="my-8">
-            <HomeTopBannerAd />
-          </div>
+        
+          </div>  
 
           {/* Up Next Section */}
           <section className="py-12">
@@ -184,7 +188,9 @@ export default function Home() {
           </section>
 
           {/* Ad after Introduction (effectivegatecpm) */}
-          <HomeAfterIntroAd />
+  
+
+              <GpBottomAd />
 
           {/* Disclaimer and Policies */}
           <section className="">

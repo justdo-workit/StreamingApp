@@ -8,6 +8,7 @@ import ScheduleGrid from "@/components/gp/ScheduleGrid";
 import RaceFacts from "@/components/gp/RaceFacts";
 import Footer from "@/components/layout/Footer";
 import GpBottomAd from "@/components/shared/GpBottomAd";
+import HomeAfterIntroAd from "@/components/shared/HomeAfterIntroAd";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/layout/Header";
 
@@ -72,7 +73,8 @@ export default async function GrandPrixPage({ params }: GrandPrixPageProps) {
             <RaceFacts circuit={gp.circuit} />
         </div>
         {/* Bottom page ad */}
-        <GpBottomAd />
+     
+                <HomeAfterIntroAd />
       </main>
       <Footer />
     </div>
