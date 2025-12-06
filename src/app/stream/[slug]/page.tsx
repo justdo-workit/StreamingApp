@@ -12,9 +12,9 @@ type StreamPageProps = {
   params: Promise<{
     slug: string;
   }>;
-  searchParams?: {
+  searchParams?: Promise<{
     session?: string;
-  };
+  }>;
 };
 
 export function generateStaticParams() {
@@ -23,6 +23,7 @@ export function generateStaticParams() {
 
 export default async function StreamPage({ params, searchParams }: StreamPageProps) {
   const { slug } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const gp = grandPrixes.find((g) => g.slug === slug);
 
   if (!gp) {
@@ -30,7 +31,7 @@ export default async function StreamPage({ params, searchParams }: StreamPagePro
   }
 
   const raceSession = gp.schedule.find((s) => s.name === "Race");
-  const selectedSessionName = searchParams?.session;
+  const selectedSessionName = resolvedSearchParams?.session;
 
   const getCountryCode = (name: string) => {
     const n = name.toLowerCase();

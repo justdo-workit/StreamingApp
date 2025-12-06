@@ -58,6 +58,7 @@ export default function Home() {
               src={heroImage.imageUrl}
               alt={heroImage.description}
               fill
+       
               className="hidden md:block object-cover"
               priority
               quality={70}
