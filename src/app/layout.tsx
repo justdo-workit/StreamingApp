@@ -33,7 +33,11 @@ export default function RootLayout({
       <head>
         
         <link rel="icon" href="/M.png" sizes="any" />
-        <meta name="google-adsense-account" content="ca-pub-3330435576859353"></meta>
+
+    <meta name="google-adsense-account" content="ca-pub-3330435576859353"></meta>
+
+
+
       </head>
       <body className={`${fontSans.variable} ${fontHeadline.variable} font-sans antialiased`}>
         <AppShell>
