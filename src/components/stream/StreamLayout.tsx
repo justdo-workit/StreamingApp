@@ -497,16 +497,16 @@ export default function StreamLayout({
 			{/* Full-screen glassy countdown modal for the next session.
           Visible from now until 30 minutes before the session starts.
           Only enabled in production to avoid interrupting local/dev streaming. */}
-			{process.env.NODE_ENV === "production" &&
+			{false && process.env.NODE_ENV === "production" &&
 				nextSessionRemainingMs !== null &&
-				nextSessionRemainingMs > 30 * 60 * 1000 && (
+				(nextSessionRemainingMs ?? 0) > 30 * 60 * 1000 && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
 						<div className="flex flex-col items-center gap-8 text-white px-4 text-center">
 							<div className="text-xs md:text-sm uppercase tracking-[0.25em] text-white/70">
 								{grandPrix.name} {nextSessionName ?? "Session"} starts in
 							</div>
 							{(() => {
-								const totalSeconds = Math.floor(nextSessionRemainingMs / 1000);
+								const totalSeconds = Math.floor(((nextSessionRemainingMs ?? 0)) / 1000);
 								const days = Math.floor(totalSeconds / (24 * 3600));
 								const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
 								const minutes = Math.floor((totalSeconds % 3600) / 60);
