@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-export default function StreamingBannerAd() {
+export default function HomeUpNextAd() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -11,26 +11,18 @@ export default function StreamingBannerAd() {
 
     container.innerHTML = '';
 
-    (window as any).atOptions = {
-      key: '9b55b82dfa1e69f2170125824c19fd15',
-      format: 'iframe',
-      height: 50,
-      width: 320,
-      params: {},
-    };
-
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
-    script.src =
-      '//www.highperformanceformat.com/9b55b82dfa1e69f2170125824c19fd15/invoke.js';
+    script.referrerPolicy = 'no-referrer-when-downgrade';
+    script.src = '//dead-hour.com/bYXlV/sMd.G/lt0oYfWZcA/neQmC9Bu/ZuUclPkZPdT/YV3/Mcj/E/2tNtDzUltaNkjHcrygMUTnYr0LNdg_';
 
     container.appendChild(script);
   }, []);
 
   return (
     <div className="w-full flex justify-center">
-      <div ref={containerRef} style={{ width: 320, height: 50 }} />
+      <div ref={containerRef} />
     </div>
   );
 }

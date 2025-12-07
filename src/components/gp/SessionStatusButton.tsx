@@ -18,7 +18,7 @@ const getStatus = (sessionTime: string, sessionName?: string) => {
   const completedDelayMinutes = 30; // show Completed 30 minutes after expected end
   const sessionEnd = sessionStart + (baseMinutes + completedDelayMinutes) * 60 * 1000;
   const diff = sessionStart - now;
-  const preOpenMs = 30 * 60 * 1000; // last 30 minutes before start
+  const preOpenMs = 60 * 60 * 1000; // last 60 minutes before start
 
   if (now > sessionEnd) {
     return { text: "Completed", status: "completed", disabled: true };

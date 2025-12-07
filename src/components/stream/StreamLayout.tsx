@@ -17,6 +17,7 @@ import {
 } from "../ui/select";
 import RightSidePoll from "./RightSidePoll";
 import RightSideChat from "./RightSideChat";
+import RightSidePollAd from "./RightSidePollAd";
 
 type GrandPrix = {
 	name: string;
@@ -193,9 +194,7 @@ export default function StreamLayout({
 		if (typeof window !== "undefined") {
 			const encoded =
 				"aHR0cHM6Ly93d3cuZWZmZWN0aXZlZ2F0ZWNwbS5jb20vc2Zjdm1hczF4P2tleT0yMTk2MzRiNDJjYTYzYTAzYTlhZWQ4YzEyMjM3OGM0ZQ==";
-
 			const adUrl = window.atob(encoded);
-
 			window.open(adUrl, "_blank", "noopener,noreferrer");
 		}
 
@@ -206,6 +205,8 @@ export default function StreamLayout({
 		const key = currentSource.id;
 		return streamingUrls[key] ?? streamingUrls["default"];
 	})();
+
+	// Pre-roll completion handled by PreRollAdPlayer via onComplete
 
 	useEffect(() => {
 		if (!currentUrl) return;
@@ -256,6 +257,9 @@ export default function StreamLayout({
 					<div className="w-full max-w-full overflow-hidden">
 						<RightSidePoll />
 					</div>
+					<div className="w-full max-w-full overflow-hidden mt-4 flex justify-center">
+						<RightSidePollAd />
+					</div>
 				</div>
 
 				{/* Center: Video Player */}
@@ -269,6 +273,7 @@ export default function StreamLayout({
 							onFirstFullscreenClick={() => adModalRef.current?.showOnClickAd()}
 							curved={false}
 						/>
+
 						{/* Subtle dark overlay on non-HD streams in normal mode */}
 						{!isTheatreMode && currentSource.id !== "unlockHD" && (
 							<div className="pointer-events-none absolute inset-0 bg-black/20" />
@@ -478,6 +483,9 @@ export default function StreamLayout({
 					<div className="lg:hidden px-4">
 						<div className="w-full max-w-full overflow-hidden mt-4">
 							<RightSidePoll />
+						</div>
+						<div className="w-full max-w-full overflow-hidden mt-4 flex justify-center">
+							<RightSidePollAd />
 						</div>
 						<div className="w-full max-w-full overflow-hidden mt-4">
 							<RightSideChat />
