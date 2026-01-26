@@ -83,3 +83,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.coming-soon{
+  background: url('https://cdn-5.motorsport.com/images/amp/Y9lLa7A2/s6/f1-2026-car-renders.jpg');
+  background-repeat: no-repeat;
+}

@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-    // Check if the path starts with /grand-prix or /stream
+    // Check if the path is home or starts with /grand-prix or /stream
     if (
+        request.nextUrl.pathname === '/' ||
         request.nextUrl.pathname.startsWith('/grand-prix') ||
         request.nextUrl.pathname.startsWith('/stream')
     ) {
@@ -13,6 +14,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
+        '/',
         '/grand-prix/:path*',
         '/stream/:path*',
     ],
