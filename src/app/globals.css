@@ -87,4 +87,15 @@
 .coming-soon{
   background: url('https://cdn-5.motorsport.com/images/amp/Y9lLa7A2/s6/f1-2026-car-renders.jpg');
   background-repeat: no-repeat;
+  background-size: cover;
+
+
+}
+@media (min-width: 768px) {
+  .coming-soon{
+    background: url('https://cdn-5.motorsport.com/images/amp/Y9lLa7A2/s6/f1-2026-car-renders.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
 }
